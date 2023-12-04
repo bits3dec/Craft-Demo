@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     // internal modules
+    implementation(project(":services:user-profile-workflow:dao"))
 
     // external libs
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
