@@ -4,10 +4,10 @@ User Profile Platform is a system which handles end to end user profile flow lik
 fetching of user profile.
 
 ## Modules
-This is a mono repo which comprises multiple services, library, domain objects. 
+This is a mono repo which has multiple services, library, domain objects. 
 Different modules are created keeping in mind separation of concern and re-usability.
 
-1. **common**: It contains independent modules which can be used across multiple services.
+1. **common**: This module has the common modules which can be used across multiple submodules.
    1. **domain**: It contains domain objects which can be used across different modules.
    2. **lib**: It contains utility libraries like kafka implementation, cache implementation, locking implementation.
       1. **cache**: This is used for caching.
