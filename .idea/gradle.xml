@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/common" />
+            <option value="$PROJECT_DIR$/common/domain" />
+            <option value="$PROJECT_DIR$/common/lib" />
+            <option value="$PROJECT_DIR$/common/lib/cache" />
+            <option value="$PROJECT_DIR$/common/lib/communication" />
+            <option value="$PROJECT_DIR$/common/lib/lock" />
+            <option value="$PROJECT_DIR$/services" />
+            <option value="$PROJECT_DIR$/services/user-profile" />
+            <option value="$PROJECT_DIR$/services/user-profile/api" />
+            <option value="$PROJECT_DIR$/services/user-profile/api/client" />
+            <option value="$PROJECT_DIR$/services/user-profile/api/server-stub" />
+            <option value="$PROJECT_DIR$/services/user-profile/dao" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

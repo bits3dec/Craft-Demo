@@ -1,0 +1,11 @@
+rootProject.name = "craft-demo"
+include("services")
+include("services:user-profile")
+include("services:user-profile:dao")
+include("services:user-profile:api:client")
+include("services:user-profile:api:server-stub")
+include("common:lib")
+include("common:lib:cache")
+include("common:lib:communication")
+include("common:lib:lock")
+include("common:domain")
