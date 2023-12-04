@@ -8,6 +8,7 @@ dependencies {
     implementation(project(":common:domain"))
 
     implementation("demo.craft:common-lib-cache:0.0.1-SNAPSHOT")
+    implementation("demo.craft:common-lib-lock:0.0.1-SNAPSHOT")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.springframework.boot:spring-boot-starter-web")
