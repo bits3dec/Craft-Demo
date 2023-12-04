@@ -1,4 +1,4 @@
-package demo.craft.user.profile.dao.cache
+package demo.craft.user.profile.common.cache
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.SerializationFeature
@@ -24,7 +24,7 @@ class GenericCacheManager(
     fun <T : Any> lookup(
         key: String,
         valueTypeRef: TypeReference<T>,
-        ttl: Duration = cacheProperties.defaultCacheTtlInSeconds,
+        ttl: Duration = cacheProperties.defaultCacheTtlDuration,
         onCacheMiss: () -> T?
     ): T? =
         cacheManager.get(key)?.let { valueString ->
@@ -37,7 +37,7 @@ class GenericCacheManager(
         key: String,
         valueTypeRef: TypeReference<T>,
         cacheValue: T,
-        ttl: Duration = cacheProperties.defaultCacheTtlInSeconds
+        ttl: Duration = cacheProperties.defaultCacheTtlDuration
     ) =
         cacheManager.put(key, objectMapper.writeValueAsString(cacheValue), ttl.seconds)
 }

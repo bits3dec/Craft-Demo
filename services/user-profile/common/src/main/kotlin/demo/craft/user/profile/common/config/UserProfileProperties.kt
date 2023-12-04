@@ -15,10 +15,10 @@ class UserProfileProperties {
     }
 
     class LockProperties {
-        var timeout: Duration = Duration.ofSeconds(2)
+        var timeoutDuration: Duration = Duration.ofSeconds(2)
     }
 
     class CacheProperties {
-        var defaultCacheTtlInSeconds: Duration = Duration.ofDays(7)
+        var defaultCacheTtlDuration: Duration = Duration.ofDays(7)
     }
 }
