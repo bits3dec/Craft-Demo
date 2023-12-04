@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: user-profile
+  main:
+    banner-mode: off
+  datasource:
+    name: product-registry
+    url: jdbc:postgresql://localhost:5432/product-registry
+    username: postgres
+    password: postgres
+    hikari:
+      minimumIdle: 10
+      maximumPoolSize: 25
+      data-source-properties:
+        #loggerLevel: TRACE
+        logUnclosedConnections: true
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        generate_statistics: false
+    show-sql: true
+  flyway:
+    connectRetries: 20
+    baselineOnMigrate: true
+    baselineVersion: 0
+    locations: classpath:db/migration
+
+logging:
+  level:
+    demo:
+      craft:
+        product:
+          registry: DEBUG
+    org:
+      springframework:
+        web.filter.CommonsRequestLoggingFilter: DEBUG
+#      hibernate:
+#        SQL: DEBUG
+#        type:
+#          descriptor:
+#            sql:
+#              BasicBinder: TRACE
+
+server:
+  port: 8081
+  shutdown: graceful
+  lifecycle:
+    timeout-per-shutdown-phase: 15
