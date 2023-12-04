@@ -67,5 +67,5 @@ demo:
         userProfileRequestTopic: 'user-profile-request'
         userProfileRequestConfirmationTopic: 'user-profile-request-confirmation'
       cache:
-        defaultCacheTtlInSeconds: 20s #Setting low ttl for demo purpose. In practical, basis the pattern of the change duration we can set the ttl (say we can start with 1 week)
+        defaultCacheTtlInDuration: 30s #Setting low ttl for demo purpose. In practical, basis the pattern of the change duration we can set the ttl (say we can start with 1 week)
 
