@@ -5,7 +5,7 @@ spring:
     banner-mode: off
   datasource:
     name: product-registry
-    url: jdbc:postgresql://localhost:5432/product-registry
+    url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: postgres
     hikari:

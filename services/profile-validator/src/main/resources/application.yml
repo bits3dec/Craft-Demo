@@ -4,8 +4,8 @@ spring:
   main:
     banner-mode: off
   datasource:
-    name: postgres
-    url: jdbc:postgresql://localhost:5432/postgres
+    name: profile-validator
+    url: jdbc:postgresql://localhost:5432/profile-validator
     username: postgres
     password: postgres
     hikari:

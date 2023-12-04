@@ -1,4 +1,4 @@
-package demo.craft.user.profile.common.config
+package demo.craft.user.profile.dao
 
 import java.time.Duration
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -19,6 +19,6 @@ class UserProfileProperties {
     }
 
     class CacheProperties {
-        var defaultCacheTtl: Duration = Duration.ofDays(7)
+        var defaultCacheTtlInSeconds: Duration = Duration.ofDays(7)
     }
 }

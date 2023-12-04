@@ -7,17 +7,17 @@ import redis.clients.jedis.JedisPool
 @Component
 class RedisCacheManager(
     private val jedisPool: JedisPool
-) : CacheService {
+) : CacheManager {
     private val log = KotlinLogging.logger {}
-    override fun put(key: String, value: String, ttl: Long?): Unit =
+    override fun put(key: String, value: String, ttlInSeconds: Long?): Unit =
         jedisPool.resource.use { jedis ->
-            if (ttl == null) {
+            if (ttlInSeconds == null) {
                 jedis.set(key, value).also {
                     log.info { "RedisCache: Data saved successfully. key = '$key', value = '$value'" }
                 }
             } else {
-                jedis.setex(key, ttl, value).also {
-                    log.info { "RedisCache: Data saved successfully. key = '$key', value = '$value', ttl = '$ttl'" }
+                jedis.setex(key, ttlInSeconds, value).also {
+                    log.info { "RedisCache: Data saved successfully. key = '$key', value = '$value', ttl = '$ttlInSeconds'" }
                 }
             }
         }

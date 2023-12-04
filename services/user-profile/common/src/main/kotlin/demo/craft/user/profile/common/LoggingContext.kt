@@ -1,4 +1,4 @@
-package demo.craft.user.profile.common.config
+package demo.craft.user.profile.common
 
 import mu.withLoggingContext
 

@@ -28,8 +28,5 @@ class UserProfileListener(
     fun onMessage(message: String) {
         val topicName = kafkaProperties.userProfileRequestConfirmationTopic
         log.info { "Received kafka message. Topic: $topicName. Message: $message" }
-
-        val message = objectMapper.readValue(message, String::class.java)
-        log.info { "Post deserialization. Message: $message" }
     }
 }

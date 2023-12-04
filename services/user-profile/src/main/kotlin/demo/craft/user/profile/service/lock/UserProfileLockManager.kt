@@ -1,7 +1,7 @@
 package demo.craft.user.profile.service.lock
 
 import demo.craft.common.lock.LockManager
-import demo.craft.user.profile.common.config.LoggingContext
+import demo.craft.user.profile.common.LoggingContext
 import demo.craft.user.profile.common.config.UserProfileProperties
 import org.springframework.stereotype.Component
 import javax.transaction.Transactional
