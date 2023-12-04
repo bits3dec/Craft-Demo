@@ -14,9 +14,9 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 @SpringBootApplication(
     scanBasePackages = [
         "demo.craft.user.profile",
-        "demo.craft.common.cache", // for cache
-        "demo.craft.common.communication", // for kafka publisher
-        "demo.craft.common.lock" // for lock manager
+        "demo.craft.common.cache",
+        "demo.craft.common.communication",
+        "demo.craft.common.lock"
     ]
 )
 @ConfigurationPropertiesScan(
