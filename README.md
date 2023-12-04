@@ -1,5 +1,4 @@
 # User Profile Platform
-
 User Profile Platform is a system which handles end to end user profile flow like creation, updation, 
 fetching of user profile.
 

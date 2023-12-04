@@ -18,3 +18,9 @@ include("services:user-profile-workflow")
 include("services:user-profile-workflow:dao")
 include("services:profile-validator")
 include("services:profile-validator:dao")
+include("services:user-profile:common")
+findProject(":services:user-profile:common")?.name = "common"
+include("services:user-profile:api:common")
+findProject(":services:user-profile:api:common")?.name = "common"
+include("services:user-profile:common")
+findProject(":services:user-profile:common")?.name = "common"

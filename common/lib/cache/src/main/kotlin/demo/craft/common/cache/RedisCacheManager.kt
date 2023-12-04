@@ -7,7 +7,7 @@ import redis.clients.jedis.JedisPool
 @Component
 class RedisCacheManager(
     private val jedisPool: JedisPool
-) : CacheManager {
+) : CacheService {
     private val log = KotlinLogging.logger {}
     override fun put(key: String, value: String, ttl: Long?): Unit =
         jedisPool.resource.use { jedis ->

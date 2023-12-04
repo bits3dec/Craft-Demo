@@ -1,6 +1,6 @@
 package demo.craft.common.cache
 
-interface CacheManager {
+interface CacheService {
     fun put(key: String, value: String, ttl: Long? = null): Unit
     fun get(key: String): String?
     fun evict(keys: List<String>): Unit
