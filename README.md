@@ -10,11 +10,9 @@ Different modules are created keeping in mind separation of concern and re-usabi
 1. **common**: It contains independent modules which can be used across multiple services.
    1. **domain**: It contains domain objects which can be used across different modules.
    2. **lib**: It contains utility libraries like kafka implementation, cache implementation, locking implementation.
-      1. **cache**: This is used for caching (redis implementation). 
+      1. **cache**: This is used for caching.
       2. **communication**: This is used to send message to Kafka.
-      3. **lock**: Locking mechanism for exclusive access to a shared resource, such as Database.
-         Postgres Lock is implemented.
-
+      3. **lock**: Locking mechanism for exclusive access to a shared resource.
 3. **services**
     1. **user-profile**: This service takes client requests, maintains profile history, profile request status.
         1. **api**: Open API specs
