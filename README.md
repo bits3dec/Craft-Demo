@@ -7,7 +7,7 @@ fetching of user profile.
 This is a mono repo which comprises multiple services, library, domain objects. 
 Different modules are created keeping in mind separation of concern and re-usability.
 
-1. **Common**: It contains independent modules which can be used across multiple services.
+1. **common**: It contains independent modules which can be used across multiple services.
    1. **domain**: It contains domain objects which can be used across different modules.
    2. **lib**: It contains utility libraries like kafka implementation, cache implementation, locking implementation.
       1. **cache**: This is used for caching (redis implementation). 
@@ -15,7 +15,7 @@ Different modules are created keeping in mind separation of concern and re-usabi
       3. **lock**: Locking mechanism for exclusive access to a shared resource, such as Database.
          Postgres Lock is implemented.
 
-3. **Services**
+3. **services**
     1. **user-profile**: This service takes client requests, maintains profile history, profile request status.
         1. **api**: Open API specs
             1. **client**: This generates api interface for the clients.
