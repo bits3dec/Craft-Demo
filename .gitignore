@@ -1,0 +1,27 @@
+HELP.md
+.DS_Store
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**
+!**/src/test/**
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+
+### docker compose setup
+local-env
+
+### Config property overrides
+local.properties
+**/config/application.yml
+/application.yml
+
+### Generated code
+**/api/*client/src
+**/api/server-stub/src
+**/.openapi-generator
