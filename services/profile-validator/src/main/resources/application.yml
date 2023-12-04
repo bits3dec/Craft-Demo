@@ -1,6 +1,6 @@
 spring:
   application:
-    name: user-profile
+    name: profile-validator
   main:
     banner-mode: off
   datasource:
@@ -42,7 +42,7 @@ logging:
 #              BasicBinder: TRACE
 
 server:
-  port: 8080
+  port: 9000
   shutdown: graceful
   lifecycle:
     timeout-per-shutdown-phase: 15
