@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import demo.craft.common.communication.kafka.KafkaPublisher
-import demo.craft.user.profile.dao.UserProfileProperties
+import demo.craft.user.profile.common.config.UserProfileProperties
 import demo.craft.user.profile.dao.cache.GenericCacheManager
 import mu.KotlinLogging
 import org.springframework.stereotype.Component

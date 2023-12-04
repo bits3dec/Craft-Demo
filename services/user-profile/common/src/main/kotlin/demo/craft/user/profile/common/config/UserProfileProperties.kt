@@ -1,4 +1,4 @@
-package demo.craft.user.profile.dao
+package demo.craft.user.profile.common.config
 
 import java.time.Duration
 import org.springframework.boot.context.properties.ConfigurationProperties
