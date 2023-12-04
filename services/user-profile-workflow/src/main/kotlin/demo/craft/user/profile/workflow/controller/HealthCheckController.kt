@@ -1,4 +1,4 @@
-package demo.craft.user.profile.controller
+package demo.craft.user.profile.workflow.controller
 
 import mu.KotlinLogging
 import org.springframework.web.bind.annotation.GetMapping
@@ -10,7 +10,7 @@ class HealthCheckController {
 
     @GetMapping("/health")
     fun health(): String {
-        log.debug { "Ping received for health check" }
+        log.debug { "Ping received for health check in [User Profile Workflow]." }
         return "Ok"
     }
 }

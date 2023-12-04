@@ -1,6 +1,6 @@
 spring:
   application:
-    name: user-profile
+    name: product-registry
   main:
     banner-mode: off
   datasource:

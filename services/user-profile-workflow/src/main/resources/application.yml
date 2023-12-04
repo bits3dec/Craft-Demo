@@ -1,10 +1,10 @@
 spring:
   application:
-    name: user-profile
+    name: user-profile-workflow
   main:
     banner-mode: off
   datasource:
-    name: user_profile
+    name: user-profile-workflow
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: postgres
@@ -30,7 +30,7 @@ spring:
 
 logging:
   level:
-    demo.craft.user.profile: DEBUG
+    demo.craft.user.profile.workflow: DEBUG
     org:
       springframework:
         web.filter.CommonsRequestLoggingFilter: DEBUG
@@ -42,7 +42,7 @@ logging:
 #              BasicBinder: TRACE
 
 server:
-  port: 8080
+  port: 8085
   shutdown: graceful
   lifecycle:
     timeout-per-shutdown-phase: 15
