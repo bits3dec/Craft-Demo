@@ -5,7 +5,7 @@ spring:
     banner-mode: off
   datasource:
     name: user-profile
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/user-profile
     username: postgres
     password: postgres
     hikari:
@@ -32,6 +32,8 @@ logging:
   level:
     demo.craft.user.profile: DEBUG
     org:
+      apache:
+        kafka: OFF
       springframework:
         web.filter.CommonsRequestLoggingFilter: DEBUG
 #      hibernate:
@@ -46,3 +48,24 @@ server:
   shutdown: graceful
   lifecycle:
     timeout-per-shutdown-phase: 15
+
+
+demo:
+  craft:
+    communication:
+      kafka:
+        bootstrapServers: 'localhost:9092'
+        consumer:
+          groupId: 'user-profile'
+    cache:
+      redis:
+        url: "localhost"
+        port: 6379
+        readTimeoutInMs: 100
+    user.profile:
+      kafka:
+        userProfileRequestTopic: 'user-profile-request'
+        userProfileRequestConfirmationTopic: 'user-profile-request-confirmation'
+      cache:
+        defaultCacheTtlInSeconds: 20s #Setting low ttl for demo purpose. In practical, basis the pattern of the change duration we can set the ttl (say we can start with 1 week)
+

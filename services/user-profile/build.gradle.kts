@@ -10,6 +10,12 @@ dependencies {
     // internal modules
     implementation(project(":services:user-profile:api:server-stub"))
     implementation(project(":services:user-profile:dao"))
+    implementation(project(":services:user-profile:common"))
+
+    // internal libs
+    implementation("demo.craft:common-lib-lock:0.0.1-SNAPSHOT")
+    implementation("demo.craft:common-lib-communication:0.0.1-SNAPSHOT")
+    implementation("demo.craft:common-lib-cache:0.0.1-SNAPSHOT")
 
     // external libs
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
