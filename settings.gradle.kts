@@ -12,6 +12,7 @@ include("services:user-profile:dao")
 include("services:user-profile:api:client")
 include("services:user-profile:api:server-stub")
 include("services:user-profile:common")
+include("services:user-profile:domain")
 
 include("services:product-registry")
 include("services:product-registry:dao")
@@ -22,8 +23,10 @@ include("services:product-registry:common")
 include("services:user-profile-workflow")
 include("services:user-profile-workflow:dao")
 include("services:user-profile-workflow:common")
+include("services:user-profile-workflow:domain")
 
 include("services:profile-validator")
 include("services:profile-validator:dao")
 include("services:profile-validator:common")
-
+include("services:user-profile:domain")
+findProject(":services:user-profile:domain")?.name = "domain"
