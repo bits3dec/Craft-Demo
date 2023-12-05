@@ -2,18 +2,19 @@ package demo.craft.user.profile.workflow.entity
 
 import org.hibernate.annotations.CreationTimestamp
 import java.time.LocalDateTime
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.OneToOne
 
 @Entity
-data class UserProfileWorkflowHistory(
+data class UserProfileWorkflowFailureReason(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    @ManyToOne
+    @OneToOne
     val userProfileWorkflow: UserProfileWorkflow,
-
-    // Json string value of the "user profile workflow"
-    val value: String,
-
+    val reason: String,
     @CreationTimestamp
-    val createdAt: LocalDateTime? = null,
+    val createdAt: LocalDateTime? = null
 )

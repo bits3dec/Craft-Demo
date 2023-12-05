@@ -29,5 +29,4 @@ include("services:user-profile-workflow:domain")
 include("services:profile-validator")
 include("services:profile-validator:dao")
 include("services:profile-validator:common")
-include("services:user-profile:domain")
-findProject(":services:user-profile:domain")?.name = "domain"
+include("services:profile-validator:domain")

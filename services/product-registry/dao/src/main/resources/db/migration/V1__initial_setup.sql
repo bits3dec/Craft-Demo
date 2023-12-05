@@ -19,4 +19,4 @@ CREATE TABLE "product_subscription" (
   "updated_at" timestamp
 );
 
-CREATE UNIQUE INDEX "product_subscription_user_id_idx" ON "product_subscription" ("user_id");
+CREATE UNIQUE INDEX "product_subscription_user_id_product_idx" ON "product_subscription" ("user_id", "product");

@@ -75,9 +75,7 @@ CREATE UNIQUE INDEX "user_profile_legal_address_id_idx" ON "user_profile" ("lega
 
 CREATE UNIQUE INDEX "user_profile_tax_identifier_id_idx" ON "user_profile" ("tax_identifier_id");
 
-CREATE UNIQUE INDEX "user_profile_request_request_id_idx" ON "user_profile_request" ("request_id");
-
-CREATE INDEX "user_profile_request_user_id_idx" ON "user_profile_request" ("user_id");
+CREATE UNIQUE INDEX "user_profile_request_user_id_request_id_idx" ON "user_profile_request" ("user_id", "request_id");
 
 CREATE UNIQUE INDEX "user_profile_history_user_id_idx" ON "user_profile_history" ("user_id");
 

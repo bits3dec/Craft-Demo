@@ -5,6 +5,8 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":services:profile-validator:domain"))
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.postgresql:postgresql") // postgres database
