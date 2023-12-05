@@ -7,6 +7,9 @@ import demo.craft.common.communication.kafka.KafkaPublisher
 import demo.craft.common.domain.enums.Operation
 import demo.craft.user.profile.common.config.UserProfileProperties
 import demo.craft.user.profile.common.cache.GenericCacheManager
+import demo.craft.user.profile.common.exception.UserProfileNotFoundException
+import demo.craft.user.profile.common.exception.UserProfileRequestAlreadyInProgressException
+import demo.craft.user.profile.common.exception.UserProfileRequestNotFoundException
 import demo.craft.user.profile.dao.UserProfileAccess
 import demo.craft.user.profile.domain.entity.UserProfile
 import demo.craft.user.profile.domain.entity.UserProfileRequest
@@ -36,6 +39,7 @@ class BusinessProfileService(
         createBusinessProfileRequest: CreateBusinessProfileRequest
     ): UserProfileRequest {
         log.debug { "Received request in [User-Profile] Controller to create business profile." }
+        checkIfAnyProgressRequest(userId)
         val requestId = UUID.randomUUID().toString()
         log.debug { "Request-id: $requestId generated for create request" }
         val userProfileRequest = UserProfileRequest(
@@ -54,13 +58,13 @@ class BusinessProfileService(
         requestId: String
     ): UserProfileRequest {
         return userProfileAccess.findUserProfileRequestByUserIdAndRequestId(userId, requestId)
-            ?: throw java.lang.RuntimeException("No user-profile-request found for user-id: $userId and request-id: $requestId")
+            ?: throw UserProfileRequestNotFoundException(userId, requestId)
     }
 
     fun getBusinessProfile(userId: String): UserProfile {
         log.debug { "Received request in [User-Profile] Controller to fetch business profile." }
         return userProfileAccess.findUserProfileByUserId(userId)
-            ?: throw java.lang.RuntimeException("No user-profile found for user-id: $userId")
+            ?: throw UserProfileNotFoundException(userId)
     }
 
     fun updateBusinessProfileRequest(
@@ -68,6 +72,7 @@ class BusinessProfileService(
         updateBusinessProfileRequest: UpdateBusinessProfileRequest
     ): UserProfileRequest {
         log.debug { "Received request in [User-Profile] Controller to update business profile." }
+        checkIfAnyProgressRequest(userId)
         val requestId = UUID.randomUUID().toString()
         log.debug { "Request-id: $requestId generated for update request" }
         val userProfileRequest = UserProfileRequest(
@@ -79,5 +84,14 @@ class BusinessProfileService(
         )
         userProfileAccess.createUserProfileRequest(userProfileRequest)
         return userProfileRequest
+    }
+
+    // Check if there is any in-progress request for the user
+    private fun checkIfAnyProgressRequest(userId: String) {
+        userProfileAccess.findUserProfileRequestByUserId(userId)
+            ?.takeIf { it.state == State.IN_PROGRESS}
+            ?.let {
+                throw UserProfileRequestAlreadyInProgressException(userId, it.requestId)
+            }
     }
 }

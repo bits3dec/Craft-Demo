@@ -28,4 +28,8 @@ class UserProfileAccessDbImpl(
     override fun findUserProfileRequestByUserIdAndRequestId(userId: String, requestId: String): UserProfileRequest? {
         return userProfileRequestRepository.findByUserIdAndRequestId(userId, requestId)
     }
+
+    override fun findUserProfileRequestByUserId(userId: String): UserProfileRequest? {
+        return userProfileRequestRepository.findByUserId(userId)
+    }
 }

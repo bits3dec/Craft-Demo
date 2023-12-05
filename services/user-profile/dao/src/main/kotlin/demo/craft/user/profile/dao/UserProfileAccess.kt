@@ -12,4 +12,6 @@ interface UserProfileAccess {
 
     fun findUserProfileRequestByUserIdAndRequestId(userId: String, requestId: String): UserProfileRequest?
 
+    fun findUserProfileRequestByUserId(userId: String): UserProfileRequest?
+
 }
