@@ -9,6 +9,11 @@ plugins {
 dependencies {
     // internal modules
     implementation(project(":services:user-profile-workflow:dao"))
+    implementation(project(":services:user-profile-workflow:common"))
+
+    // internal libs
+    implementation("demo.craft:common-lib-communication:0.0.1-SNAPSHOT")
+    implementation("demo.craft:common-lib-lock:0.0.1-SNAPSHOT")
 
     // external libs
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

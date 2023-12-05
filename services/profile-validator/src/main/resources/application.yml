@@ -1,3 +1,17 @@
+demo:
+  craft:
+    communication:
+      kafka:
+        bootstrapServers: 'localhost:9092'
+        consumer:
+          groupId: 'profile-validator'
+    profile.validator:
+      kafka:
+        # subscribe
+        userProfileValidationRequestTopic: 'user-profile-validation-request'
+        # publish
+        userProfileValidationConfirmationTopic: 'user-profile-validation-confirmation'
+
 spring:
   application:
     name: profile-validator

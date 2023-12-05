@@ -1,3 +1,18 @@
+demo:
+  craft:
+    communication:
+      kafka:
+        bootstrapServers: 'localhost:9092'
+        consumer:
+          groupId: 'user-profile-workflow'
+    user.profile.workflow:
+      kafka:
+        # subscribe
+        userProfileRequestTopic: 'user-profile-request'
+        userProfileValidationConfirmationTopic: 'user-profile-validation-confirmation'
+        # publish
+        userProfileRequestConfirmationTopic: 'user-profile-request-confirmation'
+
 spring:
   application:
     name: user-profile-workflow

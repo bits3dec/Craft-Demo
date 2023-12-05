@@ -1,8 +1,8 @@
-package demo.craft.user.profile.workflow
+package demo.craft.profile.validator
 
 import demo.craft.common.communication.config.CommunicationProperties
 import demo.craft.common.lock.config.LockManagerProperties
-import demo.craft.user.profile.workflow.common.config.UserProfileWorkflowProperties
+import demo.craft.profile.validator.common.config.ProfileValidatorProperties
 import java.time.ZoneId
 import java.util.TimeZone
 import org.springframework.boot.SpringApplication
@@ -11,19 +11,19 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 
 @SpringBootApplication(
     scanBasePackages = [
-        "demo.craft.user.profile.workflow",
+        "demo.craft.profile.validator",
         "demo.craft.common.communication",
         "demo.craft.common.lock"
     ]
 )
 @ConfigurationPropertiesScan(
     basePackageClasses = [
-        UserProfileWorkflowProperties::class,
+        ProfileValidatorProperties::class,
         CommunicationProperties::class,
-        LockManagerProperties::class
+        LockManagerProperties::class,
     ]
 )
-class UserProfileWorkflowApp {
+class ProfileValidatorApp {
     init {
         TimeZone.setDefault(TIME_ZONE_UTC)
     }
@@ -33,7 +33,7 @@ class UserProfileWorkflowApp {
 
         @JvmStatic
         fun main(args: Array<String>) {
-            SpringApplication.run(UserProfileWorkflowApp::class.java, *args)
+            SpringApplication.run(ProfileValidatorApp::class.java, *args)
         }
     }
 }

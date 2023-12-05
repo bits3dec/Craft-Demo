@@ -1,12 +1,25 @@
 package demo.craft.product.registry
 
-
+import demo.craft.common.lock.config.LockManagerProperties
+import demo.craft.product.registry.common.config.ProductRegistryProperties
 import java.time.ZoneId
 import java.util.TimeZone
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 
-@SpringBootApplication
+@SpringBootApplication(
+    scanBasePackages = [
+        "demo.craft.product.registry",
+        "demo.craft.common.lock"
+    ]
+)
+@ConfigurationPropertiesScan(
+    basePackageClasses = [
+        ProductRegistryProperties::class,
+        LockManagerProperties::class,
+    ]
+)
 class ProductRegistryApp {
     init {
         TimeZone.setDefault(TIME_ZONE_UTC)

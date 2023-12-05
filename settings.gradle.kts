@@ -6,21 +6,24 @@ include("common:lib:communication")
 include("common:lib:lock")
 include("common:domain")
 include("services")
+
 include("services:user-profile")
 include("services:user-profile:dao")
 include("services:user-profile:api:client")
 include("services:user-profile:api:server-stub")
+include("services:user-profile:common")
+
 include("services:product-registry")
 include("services:product-registry:dao")
 include("services:product-registry:api:client")
 include("services:product-registry:api:server-stub")
+include("services:product-registry:common")
+
 include("services:user-profile-workflow")
 include("services:user-profile-workflow:dao")
+include("services:user-profile-workflow:common")
+
 include("services:profile-validator")
 include("services:profile-validator:dao")
-include("services:user-profile:common")
-findProject(":services:user-profile:common")?.name = "common"
-include("services:user-profile:api:common")
-findProject(":services:user-profile:api:common")?.name = "common"
-include("services:user-profile:common")
-findProject(":services:user-profile:common")?.name = "common"
+include("services:profile-validator:common")
+
