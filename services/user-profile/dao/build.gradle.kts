@@ -6,6 +6,8 @@ plugins {
 
 dependencies {
     implementation(project(":services:user-profile:common"))
+    implementation(project(":services:user-profile:domain"))
+
     implementation("demo.craft:common-lib-cache:0.0.1-SNAPSHOT")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

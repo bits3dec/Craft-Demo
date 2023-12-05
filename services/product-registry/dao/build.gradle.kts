@@ -5,6 +5,10 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":services:product-registry:domain"))
+
+    implementation("demo.craft:common-domain:0.0.1-SNAPSHOT")
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.postgresql:postgresql") // postgres database

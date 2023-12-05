@@ -8,7 +8,7 @@ import javax.persistence.*
 data class UserProfileWorkflowHistory(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    @OneToOne
+    @ManyToOne
     val userProfileWorkflow: UserProfileWorkflow,
 
     // Json string value of the "user profile workflow"
