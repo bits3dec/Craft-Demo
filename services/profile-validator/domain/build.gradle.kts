@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation("demo.craft:common-domain:0.0.1-SNAPSHOT")
+    implementation("demo.craft:common-domain:0.0.3-SNAPSHOT")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.springframework.boot:spring-boot-starter-web")
