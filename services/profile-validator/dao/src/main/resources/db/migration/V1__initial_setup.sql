@@ -1,36 +1,17 @@
-CREATE TYPE "operation" AS ENUM (
-  'CREATE',
-  'UPDATE'
-);
-
-CREATE TYPE "state" AS ENUM (
-  'IN_PROGRESS',
-  'ACCEPTED',
-  'FAILURE'
-);
-
-CREATE TYPE "validation_type" AS ENUM (
-  'BASIC',
-  'QUICKBOOKS_ACCOUNTING',
-  'QUICKBOOKS_PAYROLL',
-  'QUICKBOOKS_PAYMENTS',
-  'TSHEETS'
-);
-
 CREATE TABLE "user_profile_validator_workflow" (
-  "id" bigint PRIMARY KEY,
+  "id" bigserial PRIMARY KEY,
   "user_id" varchar NOT NULL,
   "request_id" varchar NOT NULL,
   "new_value" varchar NOT NULL,
-  "operation" operation NOT NULL,
-  "validation_type" validation_type NOT NULL,
-  "state" state NOT NULL,
+  "operation" varchar NOT NULL,
+  "validation_type" varchar NOT NULL,
+  "state" varchar NOT NULL,
   "created_at" timestamp NOT NULL,
   "updated_at" timestamp NOT NULL
 );
 
 CREATE TABLE "failure_reason" (
-  "id" bigint PRIMARY KEY,
+  "id" bigserial PRIMARY KEY,
   "user_profile_validator_workflow_id" bigint NOT NULL,
   "reason" varchar NOT NULL,
   "created_at" timestamp NOT NULL

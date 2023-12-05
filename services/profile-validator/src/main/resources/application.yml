@@ -44,7 +44,7 @@ spring:
 
 logging:
   level:
-    demo.craft.user.profile: DEBUG
+    demo.craft.profile.validator: DEBUG
     org:
       springframework:
         web.filter.CommonsRequestLoggingFilter: DEBUG

@@ -1,29 +1,16 @@
-CREATE TYPE "operation" AS ENUM (
-  'CREATE',
-  'UPDATE'
-);
-
-CREATE TYPE "state" AS ENUM (
-  'INITIATED',
-  'PROFILE_VALIDATION_INITIATED',
-  'PROFILE_VALIDATION_RECEIVED',
-  'ACCEPTED',
-  'FAILURE'
-);
-
 CREATE TABLE "user_profile_workflow" (
-  "id" bigint PRIMARY KEY,
+  "id" bigserial PRIMARY KEY,
   "user_id" varchar NOT NULL,
   "request_id" varchar NOT NULL,
-  "operation" operation NOT NULL,
+  "operation" varchar NOT NULL,
   "new_value" varchar NOT NULL,
-  "state" state NOT NULL,
+  "state" varchar NOT NULL,
   "created_at" timestamp NOT NULL,
   "updated_at" timestamp NOT NULL
 );
 
 CREATE TABLE "user_profile_workflow_failure_reason" (
-  "id" bigint PRIMARY KEY,
+  "id" bigserial PRIMARY KEY,
   "user_profile_workflow_id" bigint NOT NULL,
   "reason" varchar NOT NULL,
   "created_at" timestamp NOT NULL

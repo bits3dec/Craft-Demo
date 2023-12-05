@@ -1,15 +1,14 @@
 package demo.craft.user.profile.mapper
 
 import demo.craft.common.domain.enums.Operation
+import demo.craft.common.domain.enums.State
+import demo.craft.common.domain.enums.TaxType
 import demo.craft.user.profile.domain.entity.Address
 import demo.craft.user.profile.domain.entity.TaxIdentifier
 import demo.craft.user.profile.domain.entity.UserProfile
 import demo.craft.user.profile.domain.entity.UserProfileRequest
-import demo.craft.user.profile.domain.entity.enums.State
-import demo.craft.user.profile.domain.entity.enums.TaxType
 import demo.craft.user.profile.model.BusinessProfile
 import demo.craft.user.profile.model.BusinessProfileRequestDetails
-import demo.craft.user.profile.model.CreateBusinessProfileRequest
 
 fun UserProfile.toApiModel(): demo.craft.user.profile.model.BusinessProfile =
     BusinessProfile(
