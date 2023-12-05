@@ -4,7 +4,12 @@ import demo.craft.user.profile.domain.entity.UserProfile
 import demo.craft.user.profile.domain.entity.UserProfileRequest
 
 interface UserProfileAccess {
-    fun findByUserId(userId: String): UserProfile?
+    fun findUserProfileByUserId(userId: String): UserProfile?
 
-    fun createOrUpdateUserProfile(changeRequest: UserProfileRequest): UserProfile
+    fun createOrUpdateUserProfile(userProfileRequest: UserProfileRequest): UserProfileRequest
+
+    fun createUserProfileRequest(userProfileRequest: UserProfileRequest): UserProfileRequest
+
+    fun findUserProfileRequestByUserIdAndRequestId(userId: String, requestId: String): UserProfileRequest?
+
 }

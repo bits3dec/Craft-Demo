@@ -1,21 +1,21 @@
-CREATE TYPE "tax_type" AS ENUM (
-  'PAN',
-  'EIN'
-);
-
-CREATE TYPE "operation" AS ENUM (
-  'CREATE',
-  'UPDATE'
-);
-
-CREATE TYPE "state" AS ENUM (
-  'IN_PROGRESS',
-  'ACCEPTED',
-  'REJECTED'
-);
+--CREATE TYPE "tax_type" AS ENUM (
+--  'PAN',
+--  'EIN'
+--);
+--
+--CREATE TYPE "operation" AS ENUM (
+--  'CREATE',
+--  'UPDATE'
+--);
+--
+--CREATE TYPE "state" AS ENUM (
+--  'IN_PROGRESS',
+--  'ACCEPTED',
+--  'REJECTED'
+--);
 
 CREATE TABLE "user_profile" (
-  "id" bigint PRIMARY KEY,
+  "id" bigserial PRIMARY KEY,
   "user_id" varchar NOT NULL,
   "company_name" varchar NOT NULL,
   "legal_name" varchar NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE "user_profile" (
 );
 
 CREATE TABLE "address" (
-  "id" bigint PRIMARY KEY,
+  "id" bigserial PRIMARY KEY,
   "line1" varchar NOT NULL,
   "line2" varchar NOT NULL,
   "city" varchar NOT NULL,
@@ -41,26 +41,26 @@ CREATE TABLE "address" (
 );
 
 CREATE TABLE "tax_identifier" (
-  "id" bigint PRIMARY KEY,
+  "id" bigserial PRIMARY KEY,
   "value" varchar NOT NULL,
-  "type" tax_type NOT NULL,
+  "type" varchar NOT NULL,
   "created_at" timestamp NOT NULL,
   "updated_at" timestamp NOT NULL
 );
 
 CREATE TABLE "user_profile_request" (
-  "id" bigint PRIMARY KEY,
+  "id" bigserial PRIMARY KEY,
   "request_id" varchar NOT NULL,
   "user_id" varchar NOT NULL,
-  "operation" operation NOT NULL,
-  "state" state NOT NULL,
+  "operation" varchar NOT NULL,
+  "state" varchar NOT NULL,
   "new_value" varchar NOT NULL,
   "created_at" timestamp NOT NULL,
   "updated_at" timestamp NOT NULL
 );
 
 CREATE TABLE "user_profile_history" (
-  "id" bigint PRIMARY KEY,
+  "id" bigserial PRIMARY KEY,
   "user_id" varchar NOT NULL,
   "user_profile_version" bigint NOT NULL,
   "value" varchar NOT NULL,
@@ -84,7 +84,5 @@ ALTER TABLE "user_profile" ADD FOREIGN KEY ("business_address_id") REFERENCES "a
 ALTER TABLE "user_profile" ADD FOREIGN KEY ("legal_address_id") REFERENCES "address" ("id");
 
 ALTER TABLE "user_profile" ADD FOREIGN KEY ("tax_identifier_id") REFERENCES "tax_identifier" ("id");
-
-ALTER TABLE "user_profile_request" ADD FOREIGN KEY ("user_id") REFERENCES "user_profile" ("user_id");
 
 ALTER TABLE "user_profile_history" ADD FOREIGN KEY ("user_id") REFERENCES "user_profile" ("user_id");

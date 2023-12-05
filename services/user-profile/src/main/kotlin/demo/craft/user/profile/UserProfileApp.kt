@@ -1,5 +1,4 @@
-package demo.craft.user.profile.service
-
+package demo.craft.user.profile
 
 import demo.craft.common.cache.config.CacheProperties
 import demo.craft.common.communication.config.CommunicationProperties

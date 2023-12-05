@@ -19,7 +19,7 @@ data class UserProfile(
     @OneToOne
     val taxIdentifier: TaxIdentifier,
     val email: String,
-    val website: String? = null,
+    val website: String,
     @CreationTimestamp
     val createdAt: LocalDateTime? = null,
     @UpdateTimestamp

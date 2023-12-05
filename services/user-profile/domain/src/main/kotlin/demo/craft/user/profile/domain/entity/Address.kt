@@ -12,7 +12,6 @@ import javax.persistence.Id
 data class Address(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    val userId: String,
     val line1: String,
     val line2: String,
     val city: String,

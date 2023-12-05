@@ -11,8 +11,8 @@ import javax.persistence.*
 data class UserProfileRequest(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
-    val userProfile: UserProfile,
     val requestId: String,
+    val userId: String,
     @Enumerated(EnumType.STRING)
     val operation: Operation,
     @Enumerated(EnumType.STRING)
