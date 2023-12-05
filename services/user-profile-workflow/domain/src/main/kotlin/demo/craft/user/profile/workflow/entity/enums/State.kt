@@ -1,4 +1,4 @@
-package demo.craft.user.profile.workflow.entity
+package demo.craft.user.profile.workflow.entity.enums
 
 enum class State {
     INITIATED,

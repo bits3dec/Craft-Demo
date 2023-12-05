@@ -19,6 +19,7 @@ include("services:product-registry:dao")
 include("services:product-registry:api:client")
 include("services:product-registry:api:server-stub")
 include("services:product-registry:common")
+include("services:product-registry:domain")
 
 include("services:user-profile-workflow")
 include("services:user-profile-workflow:dao")

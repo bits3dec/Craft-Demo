@@ -1,6 +1,7 @@
 package demo.craft.user.profile.domain.entity
 
 import demo.craft.common.domain.enums.Operation
+import demo.craft.user.profile.domain.entity.enums.State
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
