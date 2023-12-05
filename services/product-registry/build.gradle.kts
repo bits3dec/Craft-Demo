@@ -10,6 +10,10 @@ dependencies {
     // internal modules
     implementation(project(":services:product-registry:api:server-stub"))
     implementation(project(":services:product-registry:dao"))
+    implementation(project(":services:product-registry:common"))
+
+    // internal libs
+    implementation("demo.craft:common-lib-lock:0.0.1-SNAPSHOT")
 
     // external libs
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
