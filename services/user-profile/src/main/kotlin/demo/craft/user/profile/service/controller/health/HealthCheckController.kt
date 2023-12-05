@@ -1,4 +1,4 @@
-package demo.craft.user.profile.service.controller
+package demo.craft.user.profile.service.controller.health
 
 import mu.KotlinLogging
 import org.springframework.web.bind.annotation.GetMapping

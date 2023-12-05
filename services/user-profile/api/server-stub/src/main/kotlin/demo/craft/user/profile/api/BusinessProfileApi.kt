@@ -5,11 +5,7 @@
 */
 package demo.craft.user.profile.api
 
-import demo.craft.user.profile.model.CreateBusinessProfileRequest
-import demo.craft.user.profile.model.CreateBusinessProfileResponse
 import demo.craft.user.profile.model.GetBusinessProfileResponse
-import demo.craft.user.profile.model.UpdateBusinessProfileRequest
-import demo.craft.user.profile.model.UpdateBusinessProfileResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -45,33 +41,9 @@ interface BusinessProfileApi {
     @RequestMapping(
             value = ["/user-profile/v1/business-profile"],
             produces = ["application/json"], 
-            consumes = ["application/json"],
-            method = [RequestMethod.POST])
-    fun createBusinessProfile( @RequestHeader(value="x-user-id", required=true) xMinusUserMinusId: kotlin.String
-, @Valid @RequestBody createBusinessProfileRequest: CreateBusinessProfileRequest
-): ResponseEntity<CreateBusinessProfileResponse> {
-        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
-    }
-
-
-    @RequestMapping(
-            value = ["/user-profile/v1/business-profile"],
-            produces = ["application/json"], 
             method = [RequestMethod.GET])
     fun getBusinessProfile( @RequestHeader(value="x-user-id", required=true) xMinusUserMinusId: kotlin.String
 ): ResponseEntity<GetBusinessProfileResponse> {
-        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
-    }
-
-
-    @RequestMapping(
-            value = ["/user-profile/v1/business-profile"],
-            produces = ["application/json"], 
-            consumes = ["application/json"],
-            method = [RequestMethod.PUT])
-    fun updateBusinessProfile( @RequestHeader(value="x-user-id", required=true) xMinusUserMinusId: kotlin.String
-, @Valid @RequestBody updateBusinessProfileRequest: UpdateBusinessProfileRequest
-): ResponseEntity<UpdateBusinessProfileResponse> {
         return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
     }
 }

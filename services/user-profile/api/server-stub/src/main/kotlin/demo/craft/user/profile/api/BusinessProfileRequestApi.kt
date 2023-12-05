@@ -5,7 +5,11 @@
 */
 package demo.craft.user.profile.api
 
+import demo.craft.user.profile.model.CreateBusinessProfileRequest
+import demo.craft.user.profile.model.CreateBusinessProfileResponse
 import demo.craft.user.profile.model.GetBusinessProfileRequestDetailsResponse
+import demo.craft.user.profile.model.UpdateBusinessProfileRequest
+import demo.craft.user.profile.model.UpdateBusinessProfileResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -39,12 +43,36 @@ interface BusinessProfileRequestApi {
 
 
     @RequestMapping(
+            value = ["/user-profile/v1/business-profile"],
+            produces = ["application/json"], 
+            consumes = ["application/json"],
+            method = [RequestMethod.POST])
+    fun createBusinessProfile( @RequestHeader(value="x-user-id", required=true) xMinusUserMinusId: kotlin.String
+, @Valid @RequestBody createBusinessProfileRequest: CreateBusinessProfileRequest
+): ResponseEntity<CreateBusinessProfileResponse> {
+        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+    }
+
+
+    @RequestMapping(
             value = ["/user-profile/v1/business-profile/request-details"],
             produces = ["application/json"], 
             method = [RequestMethod.GET])
     fun getBusinessProfileRequestDetails( @RequestHeader(value="x-user-id", required=true) xMinusUserMinusId: kotlin.String
 ,@NotNull  @RequestParam(value = "requestId", required = true) requestId: kotlin.String
 ): ResponseEntity<GetBusinessProfileRequestDetailsResponse> {
+        return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
+    }
+
+
+    @RequestMapping(
+            value = ["/user-profile/v1/business-profile"],
+            produces = ["application/json"], 
+            consumes = ["application/json"],
+            method = [RequestMethod.PUT])
+    fun updateBusinessProfile( @RequestHeader(value="x-user-id", required=true) xMinusUserMinusId: kotlin.String
+, @Valid @RequestBody updateBusinessProfileRequest: UpdateBusinessProfileRequest
+): ResponseEntity<UpdateBusinessProfileResponse> {
         return ResponseEntity(HttpStatus.NOT_IMPLEMENTED)
     }
 }

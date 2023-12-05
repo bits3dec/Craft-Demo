@@ -13,11 +13,12 @@ import javax.validation.constraints.Size
 
 /**
  * 
- * @param requestStatus 
+ * @param requestDetails 
  */
 data class GetBusinessProfileRequestDetailsResponse(
 
-    @JsonProperty("requestStatus") val requestStatus: BusinessProfileRequestDetails? = null
+    @get:NotNull 
+    @JsonProperty("requestDetails") val requestDetails: BusinessProfileRequestDetails
 ) {
 
 }

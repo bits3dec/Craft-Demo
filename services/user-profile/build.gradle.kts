@@ -11,8 +11,10 @@ dependencies {
     implementation(project(":services:user-profile:api:server-stub"))
     implementation(project(":services:user-profile:dao"))
     implementation(project(":services:user-profile:common"))
+    implementation(project(":services:user-profile:domain"))
 
     // internal libs
+    implementation("demo.craft:common-domain:0.0.1-SNAPSHOT")
     implementation("demo.craft:common-lib-lock:0.0.1-SNAPSHOT")
     implementation("demo.craft:common-lib-communication:0.0.1-SNAPSHOT")
     implementation("demo.craft:common-lib-cache:0.0.1-SNAPSHOT")
