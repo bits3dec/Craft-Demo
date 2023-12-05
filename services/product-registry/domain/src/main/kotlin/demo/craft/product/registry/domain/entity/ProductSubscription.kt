@@ -1,24 +1,19 @@
-package demo.craft.user.profile.workflow.entity
+package demo.craft.product.registry.domain.entity
 
-import demo.craft.common.domain.enums.Operation
-import demo.craft.user.profile.workflow.entity.enums.State
+import demo.craft.common.domain.enums.Product
+import demo.craft.product.registry.domain.entity.enums.Status
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
-data class UserProfileWorkflow(
+data class ProductSubscription(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     val userId: String,
-    val requestId: String,
-    val operation: Operation,
-
-    // Json string value of the "user profile"
-    val newValue: String,
-    val state: State,
-
+    val product: Product,
+    val status: Status,
     @CreationTimestamp
     val createdAt: LocalDateTime? = null,
     @UpdateTimestamp
