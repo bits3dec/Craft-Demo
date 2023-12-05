@@ -1,4 +1,4 @@
-package demo.craft.user.profile.service.mapper
+package demo.craft.user.profile.mapper
 
 import demo.craft.common.domain.enums.Operation
 import demo.craft.user.profile.domain.entity.Address

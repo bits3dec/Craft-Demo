@@ -1,9 +1,9 @@
-package demo.craft.user.profile.service.controller
+package demo.craft.user.profile.controller
 
 import demo.craft.user.profile.api.BusinessProfileRequestApi
 import demo.craft.user.profile.model.*
-import demo.craft.user.profile.service.mapper.toApiModel
-import demo.craft.user.profile.service.service.BusinessProfileService
+import demo.craft.user.profile.mapper.toApiModel
+import demo.craft.user.profile.service.BusinessProfileService
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController

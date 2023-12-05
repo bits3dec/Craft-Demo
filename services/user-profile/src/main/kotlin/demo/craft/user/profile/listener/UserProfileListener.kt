@@ -1,4 +1,4 @@
-package demo.craft.user.profile.service.listener
+package demo.craft.user.profile.listener
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule

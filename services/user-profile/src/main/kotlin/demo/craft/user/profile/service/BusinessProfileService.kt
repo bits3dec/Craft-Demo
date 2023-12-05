@@ -1,4 +1,4 @@
-package demo.craft.user.profile.service.service
+package demo.craft.user.profile.service
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -12,7 +12,7 @@ import demo.craft.user.profile.domain.entity.UserProfile
 import demo.craft.user.profile.domain.entity.UserProfileRequest
 import demo.craft.user.profile.domain.entity.enums.State
 import demo.craft.user.profile.model.*
-import demo.craft.user.profile.service.mapper.toDomainModel
+import demo.craft.user.profile.mapper.toDomainModel
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
 import java.util.UUID

@@ -22,7 +22,7 @@ class UserProfileAccessDbImpl(
     }
 
     override fun createUserProfileRequest(userProfileRequest: UserProfileRequest): UserProfileRequest {
-        return userProfileRequestRepository.save(userProfileRequest)
+        return userProfileRequestRepository.saveAndFlush(userProfileRequest)
     }
 
     override fun findUserProfileRequestByUserIdAndRequestId(userId: String, requestId: String): UserProfileRequest? {
