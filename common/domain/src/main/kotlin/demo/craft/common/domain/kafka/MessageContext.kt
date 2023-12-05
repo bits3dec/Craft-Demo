@@ -1,0 +1,9 @@
+package demo.craft.common.domain.kafka
+
+enum class MessageContext {
+    USER_PROFILE_REQUEST,
+    USER_PROFILE_REQUEST_CONFIRMATION,
+
+    USER_PROFILE_VALIDATION_REQUEST,
+    USER_PROFILE_VALIDATION_CONFIRMATION
+}

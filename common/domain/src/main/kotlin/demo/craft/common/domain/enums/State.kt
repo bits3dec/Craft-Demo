@@ -1,4 +1,4 @@
-package demo.craft.user.profile.domain.entity.enums
+package demo.craft.common.domain.enums
 
 enum class State {
     IN_PROGRESS,

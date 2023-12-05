@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import demo.craft.common.communication.kafka.KafkaPublisher
 import demo.craft.common.domain.enums.Operation
+import demo.craft.common.domain.enums.State
 import demo.craft.user.profile.common.config.UserProfileProperties
 import demo.craft.user.profile.common.cache.GenericCacheManager
 import demo.craft.user.profile.common.exception.UserProfileNotFoundException
@@ -13,7 +14,6 @@ import demo.craft.user.profile.common.exception.UserProfileRequestNotFoundExcept
 import demo.craft.user.profile.dao.UserProfileAccess
 import demo.craft.user.profile.domain.entity.UserProfile
 import demo.craft.user.profile.domain.entity.UserProfileRequest
-import demo.craft.user.profile.domain.entity.enums.State
 import demo.craft.user.profile.model.*
 import demo.craft.user.profile.mapper.toDomainModel
 import mu.KotlinLogging
@@ -50,6 +50,7 @@ class BusinessProfileService(
             newValue = objectMapper.writeValueAsString(createBusinessProfileRequest.businessProfile.toDomainModel(userId))
         )
         userProfileAccess.createUserProfileRequest(userProfileRequest)
+//        kafkaPublisher.publish(kafkaProperties.userProfileRequestTopic, userId.hashCode(), )
         return userProfileRequest
     }
 
