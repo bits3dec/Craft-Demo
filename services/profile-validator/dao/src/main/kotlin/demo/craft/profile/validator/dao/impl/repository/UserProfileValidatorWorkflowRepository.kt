@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserProfileValidatorWorkflowRepository : JpaRepository<UserProfileValidatorWorkflow, Long> {
-    fun findAllByUserIdAndRequestId(userId: String): List<UserProfileValidatorWorkflow>
+    fun findAllByUserIdAndRequestId(userId: String, requestId: String): List<UserProfileValidatorWorkflow>
 }

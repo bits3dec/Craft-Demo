@@ -36,9 +36,7 @@ CREATE TABLE "failure_reason" (
   "created_at" timestamp NOT NULL
 );
 
-CREATE UNIQUE INDEX "user_profile_validator_workflow_user_id_request_id_idx" ON "user_profile_validator_workflow" ("user_id", "request_id");
-
-CREATE INDEX "user_profile_validator_workflow_request_id_idx" ON "user_profile_validator_workflow" ("request_id");
+CREATE INDEX "user_profile_validator_workflow_user_id_request_id_idx" ON "user_profile_validator_workflow" ("user_id", "request_id");
 
 CREATE UNIQUE INDEX "failure_reason_user_profile_validator_workflow_id_idx" ON "failure_reason" ("user_profile_validator_workflow_id");
 
