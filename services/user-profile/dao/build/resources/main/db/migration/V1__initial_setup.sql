@@ -1,19 +1,3 @@
---CREATE TYPE "tax_type" AS ENUM (
---  'PAN',
---  'EIN'
---);
---
---CREATE TYPE "operation" AS ENUM (
---  'CREATE',
---  'UPDATE'
---);
---
---CREATE TYPE "state" AS ENUM (
---  'IN_PROGRESS',
---  'ACCEPTED',
---  'REJECTED'
---);
-
 CREATE TABLE "user_profile" (
   "id" bigserial PRIMARY KEY,
   "user_id" varchar NOT NULL,

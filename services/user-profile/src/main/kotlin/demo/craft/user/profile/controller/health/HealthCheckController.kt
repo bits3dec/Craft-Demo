@@ -10,7 +10,7 @@ class HealthCheckController {
 
     @GetMapping("/health")
     fun health(): String {
-        log.debug { "Ping received for health check in [Product Registry]." }
+        log.debug { "Ping received for health check in [User Profile Service]." }
         return "Ok"
     }
 }
