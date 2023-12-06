@@ -1,6 +1,8 @@
 package demo.craft.common.domain.kafka
 
 import demo.craft.common.domain.enums.Operation
+import demo.craft.common.domain.kafka.enums.MessageContext
+import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import java.sql.Timestamp
 
 /**

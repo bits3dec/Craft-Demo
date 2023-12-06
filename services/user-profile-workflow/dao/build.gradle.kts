@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
     implementation(project(":services:user-profile-workflow:domain"))
+    implementation(project(":services:user-profile-workflow:common"))
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

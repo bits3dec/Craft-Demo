@@ -1,7 +1,7 @@
 package demo.craft.user.profile.workflow.entity
 
 import demo.craft.common.domain.enums.Operation
-import demo.craft.user.profile.workflow.entity.enums.State
+import demo.craft.user.profile.workflow.entity.enums.WorkflowState
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
@@ -17,7 +17,7 @@ data class UserProfileWorkflow(
 
     // Json string value of the "user profile"
     val newValue: String,
-    val state: State,
+    val state: WorkflowState,
 
     @CreationTimestamp
     val createdAt: LocalDateTime? = null,

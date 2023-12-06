@@ -1,8 +1,8 @@
-package demo.craft.user.profile.workflow.integration.product.registry.impl
+package demo.craft.user.profile.workflow.integration.impl
 
 import demo.craft.common.domain.enums.Product
 import demo.craft.product.registry.client.api.ProductRegistryApi
-import demo.craft.user.profile.workflow.integration.product.registry.ProductRegistryService
+import demo.craft.user.profile.workflow.integration.ProductRegistryService
 import org.springframework.stereotype.Component
 
 @Component

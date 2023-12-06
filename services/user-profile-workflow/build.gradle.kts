@@ -10,9 +10,10 @@ dependencies {
     // internal modules
     implementation(project(":services:user-profile-workflow:dao"))
     implementation(project(":services:user-profile-workflow:common"))
+    implementation(project(":services:user-profile-workflow:domain"))
 
     // internal libs
-    implementation("demo.craft:common-domain:0.0.1-SNAPSHOT")
+    implementation("demo.craft:common-domain:0.0.8-SNAPSHOT")
     implementation("demo.craft:common-lib-communication:0.0.1-SNAPSHOT")
     implementation("demo.craft:common-lib-lock:0.0.1-SNAPSHOT")
     implementation("demo.craft:product-registry-client:0.0.6-SNAPSHOT")

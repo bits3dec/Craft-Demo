@@ -1,7 +1,8 @@
-package demo.craft.common.domain.kafka
+package demo.craft.common.domain.kafka.impl
 
-import demo.craft.common.domain.enums.Product
 import demo.craft.common.domain.enums.State
+import demo.craft.common.domain.kafka.AbstractKafkaCallbackMessage
+import demo.craft.common.domain.kafka.enums.MessageContext
 import java.sql.Timestamp
 
 data class UserProfileValidationConfirmationMessage(
@@ -9,8 +10,7 @@ data class UserProfileValidationConfirmationMessage(
     override val requestId: String,
     override val timestamp: Timestamp,
     override val failureReason: String?, // Set failure reason if available
-    val state: State,
-    val products: List<Product>, // List of products user with active subscription
+    val state: State
 ) : AbstractKafkaCallbackMessage(
     userId = userId,
     requestId = requestId,

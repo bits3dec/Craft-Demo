@@ -1,4 +1,4 @@
-package demo.craft.common.domain.kafka
+package demo.craft.common.domain.kafka.enums
 
 enum class MessageContext {
     USER_PROFILE_REQUEST,
