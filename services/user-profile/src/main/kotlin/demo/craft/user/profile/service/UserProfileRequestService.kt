@@ -3,12 +3,9 @@ package demo.craft.user.profile.service
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import demo.craft.common.communication.kafka.KafkaPublisher
 import demo.craft.common.domain.enums.Operation
 import demo.craft.common.domain.enums.State
-import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.user.profile.common.config.UserProfileProperties
-import demo.craft.user.profile.common.cache.GenericCacheManager
 import demo.craft.user.profile.common.exception.UserProfileNotFoundException
 import demo.craft.user.profile.common.exception.UserProfileRequestAlreadyInProgressException
 import demo.craft.user.profile.common.exception.UserProfileRequestNotFoundException
@@ -25,10 +22,9 @@ import java.util.UUID
 import javax.transaction.Transactional
 
 @Component
-class BusinessProfileService(
+class UserProfileRequestService(
     private val userProfileAccess: UserProfileAccess,
     private val userProfilePublisher: UserProfilePublisher,
-    private val genericCacheManager: GenericCacheManager,
     private val userProfileProperties: UserProfileProperties
 ) {
     private val log = KotlinLogging.logger {}
@@ -39,12 +35,14 @@ class BusinessProfileService(
     }
 
     @Transactional
-    fun createBusinessProfileRequest(
+    fun triggerCreateUserProfileRequest(
         userId: String,
         createBusinessProfileRequest: CreateBusinessProfileRequest
     ): UserProfileRequest {
         log.debug { "Received request in [User-Profile] Controller to create business profile." }
-        checkIfAnyProgressRequest(userId)
+
+        checkIfAnyInProgressRequestExistsForUser(userId)
+
         val requestId = UUID.randomUUID().toString()
         log.debug { "Request-id: $requestId generated for create request" }
         val userProfileRequest = UserProfileRequest(
@@ -61,7 +59,7 @@ class BusinessProfileService(
         return userProfileRequest
     }
 
-    fun getBusinessProfileRequestDetails(
+    fun getUserProfileRequestDetails(
         userId: String,
         requestId: String
     ): UserProfileRequest {
@@ -69,19 +67,16 @@ class BusinessProfileService(
             ?: throw UserProfileRequestNotFoundException(userId, requestId)
     }
 
-    fun getBusinessProfile(userId: String): UserProfile {
-        log.debug { "Received request in [User-Profile] Controller to fetch business profile." }
-        return userProfileAccess.findUserProfileByUserId(userId)
-            ?: throw UserProfileNotFoundException(userId)
-    }
-
     @Transactional
-    fun updateBusinessProfileRequest(
+    fun triggerUpdateUserProfileRequest(
         userId: String,
         updateBusinessProfileRequest: UpdateBusinessProfileRequest
     ): UserProfileRequest {
         log.debug { "Received request in [User-Profile] Controller to update business profile." }
-        checkIfAnyProgressRequest(userId)
+
+        checkIfAnyUserProfileExistsForUser(userId)
+        checkIfAnyInProgressRequestExistsForUser(userId)
+
         val requestId = UUID.randomUUID().toString()
         log.debug { "Request-id: $requestId generated for update request" }
         val userProfileRequest = UserProfileRequest(
@@ -95,12 +90,26 @@ class BusinessProfileService(
         return userProfileRequest
     }
 
-    // Check if there is any in-progress request for the user
-    private fun checkIfAnyProgressRequest(userId: String) {
+    @Transactional
+    fun commitUserProfileRequest(userProfileRequest: UserProfileRequest): UserProfile {
+        // Update user-profile-request
+        userProfileAccess.updateUserProfileRequest(userProfileRequest)
+        // Create or Update user-profile
+        return userProfileAccess.createOrUpdateUserProfile(userProfileRequest)
+    }
+
+    private fun checkIfAnyInProgressRequestExistsForUser(userId: String) {
         userProfileAccess.findUserProfileRequestByUserId(userId)
             ?.takeIf { it.state == State.IN_PROGRESS}
             ?.let {
                 throw UserProfileRequestAlreadyInProgressException(userId, it.requestId)
+            }
+    }
+
+    private fun checkIfAnyUserProfileExistsForUser(userId: String) {
+        userProfileAccess.findUserProfileByUserId(userId)
+            ?: let {
+                throw UserProfileNotFoundException(userId)
             }
     }
 }

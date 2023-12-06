@@ -3,14 +3,14 @@ package demo.craft.user.profile.controller
 import demo.craft.user.profile.api.BusinessProfileRequestApi
 import demo.craft.user.profile.model.*
 import demo.craft.user.profile.mapper.toApiModel
-import demo.craft.user.profile.service.BusinessProfileService
+import demo.craft.user.profile.service.UserProfileRequestService
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class BusinessProfileRequestController(
-    val businessProfileService: BusinessProfileService
+    val userProfileRequestService: UserProfileRequestService
 ) : BusinessProfileRequestApi {
     private val log = KotlinLogging.logger {}
 
@@ -21,7 +21,7 @@ class BusinessProfileRequestController(
         log.debug { "Received request in [User-Profile] Controller to create business profile." }
         return ResponseEntity.ok(
             CreateBusinessProfileResponse(
-                requestUuid = businessProfileService.createBusinessProfileRequest(xMinusUserMinusId, createBusinessProfileRequest).requestId
+                requestUuid = userProfileRequestService.triggerCreateUserProfileRequest(xMinusUserMinusId, createBusinessProfileRequest).requestId
             )
         )
     }
@@ -33,7 +33,7 @@ class BusinessProfileRequestController(
         log.debug { "Received request in [User-Profile] Controller to fetch business profile." }
         return ResponseEntity.ok(
             GetBusinessProfileRequestDetailsResponse(
-                requestDetails = businessProfileService.getBusinessProfileRequestDetails(xMinusUserMinusId, requestId).toApiModel()
+                requestDetails = userProfileRequestService.getUserProfileRequestDetails(xMinusUserMinusId, requestId).toApiModel()
             )
         )
     }
@@ -45,7 +45,7 @@ class BusinessProfileRequestController(
         log.debug { "Received request in [User-Profile] Controller to update business profile." }
         return ResponseEntity.ok(
             UpdateBusinessProfileResponse(
-                requestUuid = businessProfileService.updateBusinessProfileRequest(xMinusUserMinusId, updateBusinessProfileRequest).requestId
+                requestUuid = userProfileRequestService.triggerUpdateUserProfileRequest(xMinusUserMinusId, updateBusinessProfileRequest).requestId
             )
         )
     }

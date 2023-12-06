@@ -1,10 +1,7 @@
 package demo.craft.user.profile.exception
 
 import demo.craft.user.profile.common.LoggingContext
-import demo.craft.user.profile.common.exception.UserProfileException
-import demo.craft.user.profile.common.exception.UserProfileNotFoundException
-import demo.craft.user.profile.common.exception.UserProfileRequestAlreadyInProgressException
-import demo.craft.user.profile.common.exception.UserProfileRequestNotFoundException
+import demo.craft.user.profile.common.exception.*
 import mu.KotlinLogging
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -28,6 +25,7 @@ class RestResponseEntityExceptionHandler(
         UserProfileNotFoundException::class to HttpStatus.NOT_FOUND,
         UserProfileRequestNotFoundException::class to HttpStatus.NOT_FOUND,
         UserProfileRequestAlreadyInProgressException::class to HttpStatus.CONFLICT,
+        UserProfileAlreadyExistsException::class to HttpStatus.CONFLICT,
     )
 
     @ExceptionHandler

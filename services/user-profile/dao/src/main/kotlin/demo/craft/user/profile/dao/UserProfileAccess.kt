@@ -6,9 +6,10 @@ import demo.craft.user.profile.domain.entity.UserProfileRequest
 interface UserProfileAccess {
     fun findUserProfileByUserId(userId: String): UserProfile?
 
-    fun createOrUpdateUserProfile(userProfileRequest: UserProfileRequest): UserProfileRequest
+    fun createOrUpdateUserProfile(userProfileRequest: UserProfileRequest): UserProfile
 
     fun createUserProfileRequest(userProfileRequest: UserProfileRequest): UserProfileRequest
+    fun updateUserProfileRequest(userProfileRequest: UserProfileRequest): UserProfileRequest
 
     fun findUserProfileRequestByUserIdAndRequestId(userId: String, requestId: String): UserProfileRequest?
 

@@ -12,3 +12,6 @@ class UserProfileRequestNotFoundException(userId: String, requestId: String) :
 
 class UserProfileRequestAlreadyInProgressException(userId: String, currentRequestId: String) :
     UserProfileException("User Profile Request already in progress for userId: $userId and current request-id: $currentRequestId")
+
+class UserProfileAlreadyExistsException(userId: String) :
+    UserProfileException("User Profile already exists for userId: $userId")
