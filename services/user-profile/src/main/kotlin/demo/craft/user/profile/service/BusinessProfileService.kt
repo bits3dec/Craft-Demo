@@ -6,24 +6,28 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import demo.craft.common.communication.kafka.KafkaPublisher
 import demo.craft.common.domain.enums.Operation
 import demo.craft.common.domain.enums.State
+import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.user.profile.common.config.UserProfileProperties
 import demo.craft.user.profile.common.cache.GenericCacheManager
 import demo.craft.user.profile.common.exception.UserProfileNotFoundException
 import demo.craft.user.profile.common.exception.UserProfileRequestAlreadyInProgressException
 import demo.craft.user.profile.common.exception.UserProfileRequestNotFoundException
+import demo.craft.user.profile.communication.publisher.UserProfilePublisher
 import demo.craft.user.profile.dao.UserProfileAccess
 import demo.craft.user.profile.domain.entity.UserProfile
 import demo.craft.user.profile.domain.entity.UserProfileRequest
 import demo.craft.user.profile.model.*
 import demo.craft.user.profile.mapper.toDomainModel
+import demo.craft.user.profile.mapper.toUserProfileMessage
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
 import java.util.UUID
+import javax.transaction.Transactional
 
 @Component
 class BusinessProfileService(
     private val userProfileAccess: UserProfileAccess,
-    private val kafkaPublisher: KafkaPublisher,
+    private val userProfilePublisher: UserProfilePublisher,
     private val genericCacheManager: GenericCacheManager,
     private val userProfileProperties: UserProfileProperties
 ) {
@@ -34,6 +38,7 @@ class BusinessProfileService(
         configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
     }
 
+    @Transactional
     fun createBusinessProfileRequest(
         userId: String,
         createBusinessProfileRequest: CreateBusinessProfileRequest
@@ -47,10 +52,12 @@ class BusinessProfileService(
             userId = userId,
             operation = Operation.CREATE,
             state = State.IN_PROGRESS,
-            newValue = objectMapper.writeValueAsString(createBusinessProfileRequest.businessProfile.toDomainModel(userId))
+            newValue = objectMapper.writeValueAsString(createBusinessProfileRequest.businessProfile.toUserProfileMessage())
         )
         userProfileAccess.createUserProfileRequest(userProfileRequest)
-//        kafkaPublisher.publish(kafkaProperties.userProfileRequestTopic, userId.hashCode(), )
+            .also { userProfileRequest ->
+                userProfilePublisher.publishProfileRequestMessage(userProfileRequest)
+            }
         return userProfileRequest
     }
 
@@ -68,6 +75,7 @@ class BusinessProfileService(
             ?: throw UserProfileNotFoundException(userId)
     }
 
+    @Transactional
     fun updateBusinessProfileRequest(
         userId: String,
         updateBusinessProfileRequest: UpdateBusinessProfileRequest

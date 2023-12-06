@@ -14,12 +14,11 @@ import org.springframework.stereotype.Component
 
 /**
  * This class is responsible for consuming messages from kafka.
- * This class won't have any core business logic and is only responsible consuming messages.
+ * This class does not have any core business logic and is only responsible consuming messages.
  */
 @Component
 class UserProfileWorkflowListener(
     private val userProfileWorkflowService: UserProfileWorkflowService,
-    private val kafkaPublisher: KafkaPublisher,
     userProfileWorkflowProperties: UserProfileWorkflowProperties,
 ) {
     private val log = KotlinLogging.logger {}

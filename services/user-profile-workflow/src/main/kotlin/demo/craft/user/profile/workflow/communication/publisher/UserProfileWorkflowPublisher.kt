@@ -21,7 +21,7 @@ import javax.transaction.NotSupportedException
 
 /**
  * This class is responsible for sending messages to kafka.
- * This class won't have any core business logic and is only responsible sending messages.
+ * This class does not have any core business logic and is only responsible sending messages.
  */
 @Component
 class UserProfileWorkflowPublisher(
@@ -47,7 +47,7 @@ class UserProfileWorkflowPublisher(
                 products = products
             )
         kafkaPublisher.publish(
-            topic = kafkaProperties.userProfileRequestConfirmationTopic,
+            topic = kafkaProperties.userProfileValidationRequestTopic,
             key = userProfileWorkflow.userId.hashCode(), // Using "userId" as key so that all messages belonging to same user is in order
             payload = objectMapper.writeValueAsString(userProfileRequestConfirmationMessage)
         )

@@ -17,7 +17,7 @@ CREATE TABLE "user_profile_workflow_failure_reason" (
 );
 
 CREATE TABLE "user_profile_workflow_history" (
-  "id" bigint PRIMARY KEY,
+  "id" bigserial PRIMARY KEY,
   "user_profile_workflow_id" bigint NOT NULL,
   "value" varchar NOT NULL,
   "created_at" timestamp NOT NULL

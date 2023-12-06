@@ -15,6 +15,7 @@ class UserProfileWorkflowProperties {
         var userProfileValidationConfirmationTopic: String = "user-profile-validation-confirmation"
 
         // publish
+        var userProfileValidationRequestTopic: String = "user-profile-validation-request"
         var userProfileRequestConfirmationTopic: String = "user-profile-request-confirmation"
     }
 

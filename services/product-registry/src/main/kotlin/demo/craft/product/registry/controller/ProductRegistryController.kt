@@ -6,13 +6,37 @@ import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
+
 @RestController
 class ProductRegistryController : ProductRegistryApi {
     private val log = KotlinLogging.logger {}
 
+    /*
+     TODO:
+         1. Hardcoding product subscription for now. Implement controller -> service -> dao.
+         2. Add exception handling.
+    */
     override fun getAllProductSubscriptions(xMinusUserMinusId: String): ResponseEntity<GetAllProductSubscriptionsResponse> {
         log.debug { "Request received in [Product-Registry] Controller." }
-        TODO()
+        val products = listOf(
+            Product.QUICKBOOKS_ACCOUNTING,
+            Product.QUICKBOOKS_PAYROLL,
+            Product.QUICKBOOKS_PAYMENTS,
+            Product.TSHEETS
+        )
+
+        val productSubscriptions = mutableListOf<ProductSubscription>()
+        products.forEach { product ->
+            productSubscriptions.add(
+                ProductSubscription(
+                    product = product,
+                    status = ProductSubscriptionStatus.ACTIVE
+                )
+            )
+        }
+        return ResponseEntity.ok(
+            GetAllProductSubscriptionsResponse(productSubscriptions = productSubscriptions)
+        )
     }
 
     override fun saveProductSubscription(

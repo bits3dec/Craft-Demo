@@ -10,8 +10,10 @@ dependencies {
     // internal modules
     implementation(project(":services:profile-validator:dao"))
     implementation(project(":services:profile-validator:common"))
+    implementation(project(":services:profile-validator:domain"))
 
     // internal libs
+    implementation("demo.craft:common-domain:0.0.9-SNAPSHOT")
     implementation("demo.craft:common-lib-communication:0.0.1-SNAPSHOT")
     implementation("demo.craft:common-lib-lock:0.0.1-SNAPSHOT")
 
