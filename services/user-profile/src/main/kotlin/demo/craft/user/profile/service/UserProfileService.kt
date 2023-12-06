@@ -21,7 +21,6 @@ class UserProfileService(
 ) {
     private val log = KotlinLogging.logger {}
 
-    // TODO: Update/Clear the cache if the value is updated from other parts of the system
     fun getUserProfile(userId: String): UserProfile {
         log.debug { "Received request in [User-Profile] Controller to fetch business profile." }
 
