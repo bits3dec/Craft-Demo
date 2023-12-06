@@ -1,5 +1,8 @@
 package demo.craft.user.profile.workflow.integration.config
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import demo.craft.product.registry.client.api.ProductRegistryApi
 import demo.craft.user.profile.workflow.common.config.UserProfileWorkflowProperties
@@ -18,7 +21,11 @@ import org.springframework.context.annotation.Configuration
 class ProductRegistryServiceConfig(
     userProfileWorkflowProperties: UserProfileWorkflowProperties
 ) {
-    private val objectMapper = jacksonObjectMapper()
+    private val objectMapper = jacksonObjectMapper().apply {
+        registerModule(JavaTimeModule()) // Register JavaTimeModule to handle Java 8 date/time types
+        configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        configure(DeserializationFeature. FAIL_ON_UNKNOWN_PROPERTIES, false)
+    }
     private val integrationProperties = userProfileWorkflowProperties.integration
 
     @Bean

@@ -1,5 +1,6 @@
 package demo.craft.profile.validator.service
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -23,6 +24,7 @@ class ProfileValidatorService(
     private val objectMapper = jacksonObjectMapper().apply {
         registerModule(JavaTimeModule()) // Register JavaTimeModule to handle Java 8 date/time types
         configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        configure(DeserializationFeature. FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
 
     fun createUserProfileValidatorWorkflow(

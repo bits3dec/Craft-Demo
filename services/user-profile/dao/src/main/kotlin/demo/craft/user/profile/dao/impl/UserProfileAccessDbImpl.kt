@@ -1,35 +1,181 @@
 package demo.craft.user.profile.dao.impl
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import demo.craft.common.domain.enums.Operation
+import demo.craft.common.domain.enums.State
+import demo.craft.common.domain.kafka.impl.UserProfileMessage
+import demo.craft.user.profile.common.exception.UserProfileAlreadyExistsException
+import demo.craft.user.profile.common.exception.UserProfileNotFoundException
+import demo.craft.user.profile.common.exception.UserProfileRequestNotFoundException
 import demo.craft.user.profile.dao.UserProfileAccess
-import demo.craft.user.profile.dao.impl.repository.UserProfileRepository
-import demo.craft.user.profile.dao.impl.repository.UserProfileRequestRepository
+import demo.craft.user.profile.dao.impl.repository.*
+import demo.craft.user.profile.dao.toAddress
+import demo.craft.user.profile.dao.toTaxIdentifier
+import demo.craft.user.profile.dao.toUserProfile
 import demo.craft.user.profile.domain.entity.UserProfile
+import demo.craft.user.profile.domain.entity.UserProfileHistory
 import demo.craft.user.profile.domain.entity.UserProfileRequest
 import org.springframework.stereotype.Component
 
 @Component
 class UserProfileAccessDbImpl(
     private val userProfileRepository: UserProfileRepository,
-    private val userProfileRequestRepository: UserProfileRequestRepository
+    private val userProfileRequestRepository: UserProfileRequestRepository,
+    private val userProfileHistoryRepository: UserProfileHistoryRepository,
+    private val addressRepository: AddressRepository,
+    private val taxIdentifierRepository: TaxIdentifierRepository
 ) : UserProfileAccess {
+
+    private val objectMapper = jacksonObjectMapper().apply {
+        registerModule(JavaTimeModule()) // Register JavaTimeModule to handle Java 8 date/time types
+        configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        configure(DeserializationFeature. FAIL_ON_UNKNOWN_PROPERTIES, false)
+    }
+
+
     override fun findUserProfileByUserId(userId: String): UserProfile? {
         return userProfileRepository.findByUserId(userId)
     }
 
-    override fun createOrUpdateUserProfile(userProfileRequest: UserProfileRequest): UserProfileRequest {
-        // TODO: Use the profile request to CREATE or UPDATE in original "user_profile"
-        TODO("Not yet implemented")
+    /*
+    1. User Profile
+        Do an Upsert operation in "user-profile".
+         1.1 Update: If entry exists then update.
+         2.1 Insert: If entry does not exist then insert an entry
+     2. User Profile History
+        Create an entry in 'user-profile-history".
+     */
+    override fun createOrUpdateUserProfile(userProfileRequest: UserProfileRequest): UserProfile {
+        val userProfileMessage = objectMapper.readValue(userProfileRequest.newValue, UserProfileMessage::class.java)
+        return findUserProfileByUserId(userProfileRequest.userId)
+            ?.let { currentUserProfile ->
+                // UPDATE
+
+                // If operation is CREATE then it is expected that there is not user-profile present.
+                if (userProfileRequest.operation == Operation.CREATE) {
+                    throw UserProfileAlreadyExistsException(userProfileRequest.userId)
+                }
+
+                val businessAddress =
+                    if (currentUserProfile.businessAddress == userProfileMessage.businessAddress.toAddress()) {
+                        // Use existing address
+                        currentUserProfile.businessAddress
+                    } else {
+                        // Create a new address
+                        userProfileMessage.businessAddress.toAddress()
+                    }
+                val legalAddress =
+                    if (currentUserProfile.businessAddress == userProfileMessage.businessAddress.toAddress()) {
+                        // Use existing address
+                        currentUserProfile.businessAddress
+                    } else {
+                        // Create a new address
+                        userProfileMessage.businessAddress.toAddress()
+                    }
+
+                val taxIdentifier =
+                    if (currentUserProfile.taxIdentifier == userProfileMessage.taxIdentifier.toTaxIdentifier()) {
+                        // Use existing tax-identifier
+                        currentUserProfile.taxIdentifier
+                    } else {
+                        // Create a new tax-identifier
+                        userProfileMessage.taxIdentifier.toTaxIdentifier()
+                    }
+
+                // User Profile exists so update the existing one.
+                val updatedUserProfile = currentUserProfile.copy(
+                    companyName = userProfileMessage.companyName,
+                    legalName = userProfileMessage.legalName,
+                    businessAddress = businessAddress,
+                    legalAddress = legalAddress,
+                    taxIdentifier = taxIdentifier,
+                    email = userProfileMessage.email,
+                    website = userProfileMessage.website
+                )
+
+                // Save in address, tax, user-profile
+                addressRepository.saveAndFlush(updatedUserProfile.businessAddress)
+                addressRepository.saveAndFlush(updatedUserProfile.legalAddress)
+                taxIdentifierRepository.saveAndFlush(updatedUserProfile.taxIdentifier)
+                val persistedUserProfile = userProfileRepository.saveAndFlush(updatedUserProfile)
+
+                // Save in user-profile-history
+                val newVersion =
+                    userProfileHistoryRepository.findAllByUserIdOrderByIdAsc(userProfileRequest.userId).last()
+                        .userProfileVersion
+                        .plus(1)
+                val userProfileHistory =
+                    UserProfileHistory(
+                        userId = userProfileRequest.userId,
+                        userProfileVersion = newVersion,
+                        value = objectMapper.writeValueAsString(persistedUserProfile),
+                    )
+                userProfileHistoryRepository.saveAndFlush(userProfileHistory)
+                persistedUserProfile
+            }
+            ?: let {
+                // CREATE
+
+                // If operation is UPDATE then it is expected that a user-profile exists.
+                if (userProfileRequest.operation == Operation.UPDATE) {
+                    throw UserProfileNotFoundException(userProfileRequest.userId)
+                }
+
+                val newUserProfile = userProfileMessage.toUserProfile(userProfileRequest.userId)
+
+                // Save in address, tax, user-profile
+                val persistedBusinessAddress = addressRepository.saveAndFlush(newUserProfile.businessAddress)
+                val persistedLegalAddress = addressRepository.saveAndFlush(newUserProfile.legalAddress)
+                taxIdentifierRepository.saveAndFlush(newUserProfile.taxIdentifier)
+                val persistedUserProfile = userProfileRepository.saveAndFlush(
+                    newUserProfile.copy(
+                        businessAddress = persistedBusinessAddress,
+                        legalAddress = persistedLegalAddress
+                    )
+                )
+
+                val userProfileHistory =
+                    UserProfileHistory(
+                        userId = userProfileRequest.userId,
+                        userProfileVersion = 1, // Version is set to 1 as it is the first entry
+                        value = objectMapper.writeValueAsString(persistedUserProfile),
+                    )
+                userProfileHistoryRepository.saveAndFlush(userProfileHistory)
+
+                persistedUserProfile
+            }
     }
 
     override fun createUserProfileRequest(userProfileRequest: UserProfileRequest): UserProfileRequest {
         return userProfileRequestRepository.saveAndFlush(userProfileRequest)
     }
 
+    override fun updateUserProfileRequest(
+        userId: String,
+        requestId: String,
+        state: State
+    ): UserProfileRequest {
+        return userProfileRequestRepository.findByUserIdAndRequestId(userId = userId, requestId = requestId)
+            ?.let { currentUserProfileRequest ->
+                userProfileRequestRepository.save(currentUserProfileRequest.copy(state = state))
+            } ?: let {
+                throw UserProfileRequestNotFoundException(
+                    userId = userId,
+                    requestId = requestId
+                )
+            }
+    }
+
     override fun findUserProfileRequestByUserIdAndRequestId(userId: String, requestId: String): UserProfileRequest? {
         return userProfileRequestRepository.findByUserIdAndRequestId(userId, requestId)
     }
 
-    override fun findUserProfileRequestByUserId(userId: String): UserProfileRequest? {
+    override fun findUserProfileRequestByUserId(userId: String): List<UserProfileRequest>? {
         return userProfileRequestRepository.findByUserId(userId)
     }
+
+
 }

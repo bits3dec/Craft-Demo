@@ -18,7 +18,7 @@ data class UserProfileRequest(
     @Enumerated(EnumType.STRING)
     val state: State,
 
-    // Json string value of the new "user profile"
+    // Json string value of the new "user profile message"
     val newValue: String,
 
     @CreationTimestamp

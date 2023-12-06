@@ -61,7 +61,7 @@ CREATE UNIQUE INDEX "user_profile_tax_identifier_id_idx" ON "user_profile" ("tax
 
 CREATE UNIQUE INDEX "user_profile_request_user_id_request_id_idx" ON "user_profile_request" ("user_id", "request_id");
 
-CREATE UNIQUE INDEX "user_profile_history_user_id_idx" ON "user_profile_history" ("user_id");
+CREATE INDEX "user_profile_history_user_id_idx" ON "user_profile_history" ("user_id");
 
 ALTER TABLE "user_profile" ADD FOREIGN KEY ("business_address_id") REFERENCES "address" ("id");
 

@@ -14,7 +14,7 @@ data class UserProfileValidatorWorkflow(
     val userId: String,
     val requestId: String,
 
-    // Json string value of the "user profile"
+    // Json string value of the "user profile message"
     val newValue: String,
 
     @Enumerated(EnumType.STRING)
