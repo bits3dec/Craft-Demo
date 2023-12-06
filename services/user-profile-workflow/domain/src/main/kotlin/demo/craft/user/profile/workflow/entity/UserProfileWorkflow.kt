@@ -13,12 +13,14 @@ data class UserProfileWorkflow(
     val id: Long? = null,
     val userId: String,
     val requestId: String,
+    @Enumerated(EnumType.STRING)
     val operation: Operation,
 
     // Json string value of the "user profile"
     val newValue: String,
-    val state: WorkflowState,
 
+    @Enumerated(EnumType.STRING)
+    val state: WorkflowState,
     @CreationTimestamp
     val createdAt: LocalDateTime? = null,
     @UpdateTimestamp
