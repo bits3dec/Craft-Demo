@@ -16,7 +16,7 @@ data class UserProfileWorkflow(
     @Enumerated(EnumType.STRING)
     val operation: Operation,
 
-    // Json string value of the "user profile"
+    // Json string value of the "user profile message"
     val newValue: String,
 
     @Enumerated(EnumType.STRING)

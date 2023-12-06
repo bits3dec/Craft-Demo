@@ -7,15 +7,14 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import demo.craft.common.domain.enums.Operation
 import demo.craft.common.domain.enums.State
 import demo.craft.user.profile.common.config.UserProfileProperties
+import demo.craft.user.profile.common.exception.UserProfileAlreadyExistsException
 import demo.craft.user.profile.common.exception.UserProfileNotFoundException
 import demo.craft.user.profile.common.exception.UserProfileRequestAlreadyInProgressException
 import demo.craft.user.profile.common.exception.UserProfileRequestNotFoundException
 import demo.craft.user.profile.communication.publisher.UserProfilePublisher
 import demo.craft.user.profile.dao.UserProfileAccess
-import demo.craft.user.profile.domain.entity.UserProfile
 import demo.craft.user.profile.domain.entity.UserProfileRequest
 import demo.craft.user.profile.model.*
-import demo.craft.user.profile.mapper.toDomainModel
 import demo.craft.user.profile.mapper.toUserProfileMessage
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
@@ -43,7 +42,8 @@ class UserProfileRequestService(
     ): UserProfileRequest {
         log.debug { "Received request in [User-Profile] Controller to create business profile." }
 
-        checkIfAnyInProgressRequestExistsForUser(userId)
+        assertUserProfileShouldNotExistForUser(userId)
+        assertNoRequestInProgressExistsForUser(userId)
 
         val requestId = UUID.randomUUID().toString()
         log.debug { "Request-id: $requestId generated for create request" }
@@ -77,8 +77,8 @@ class UserProfileRequestService(
     ): UserProfileRequest {
         log.debug { "Received request in [User-Profile] Controller to update business profile." }
 
-        checkIfAnyUserProfileExistsForUser(userId)
-        checkIfAnyInProgressRequestExistsForUser(userId)
+        assertUserProfileShouldExistForUser(userId)
+        assertNoRequestInProgressExistsForUser(userId)
 
         val requestId = UUID.randomUUID().toString()
         log.debug { "Request-id: $requestId generated for update request" }
@@ -87,7 +87,7 @@ class UserProfileRequestService(
             userId = userId,
             operation = Operation.UPDATE,
             state = State.IN_PROGRESS,
-            newValue = objectMapper.writeValueAsString(updateBusinessProfileRequest.businessProfile.toDomainModel(userId))
+            newValue = objectMapper.writeValueAsString(updateBusinessProfileRequest.businessProfile.toUserProfileMessage())
         )
         userProfileAccess.createUserProfileRequest(userProfileRequest)
             .also { userProfileRequest ->
@@ -118,7 +118,7 @@ class UserProfileRequestService(
         }
     }
 
-    private fun checkIfAnyInProgressRequestExistsForUser(userId: String) {
+    private fun assertNoRequestInProgressExistsForUser(userId: String) {
         userProfileAccess.findUserProfileRequestByUserId(userId)
             ?.filter { it.state == State.IN_PROGRESS }
             ?.let {
@@ -128,10 +128,17 @@ class UserProfileRequestService(
             }
     }
 
-    private fun checkIfAnyUserProfileExistsForUser(userId: String) {
+    private fun assertUserProfileShouldExistForUser(userId: String) {
         userProfileAccess.findUserProfileByUserId(userId)
             ?: let {
                 throw UserProfileNotFoundException(userId)
+            }
+    }
+
+    private fun assertUserProfileShouldNotExistForUser(userId: String) {
+        userProfileAccess.findUserProfileByUserId(userId)
+            ?. let {
+                throw UserProfileAlreadyExistsException(userId)
             }
     }
 }

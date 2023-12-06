@@ -51,7 +51,7 @@ class UserProfileAccessDbImpl(
     override fun createOrUpdateUserProfile(userProfileRequest: UserProfileRequest): UserProfile {
         val userProfileMessage = objectMapper.readValue(userProfileRequest.newValue, UserProfileMessage::class.java)
         return findUserProfileByUserId(userProfileRequest.userId)
-            ?.let { userProfile ->
+            ?.let { currentUserProfile ->
                 // UPDATE
 
                 // If operation is CREATE then it is expected that there is not user-profile present.
@@ -59,15 +59,39 @@ class UserProfileAccessDbImpl(
                     throw UserProfileAlreadyExistsException(userProfileRequest.userId)
                 }
 
+                val businessAddress =
+                    if (currentUserProfile.businessAddress == userProfileMessage.businessAddress.toAddress()) {
+                        // Use existing address
+                        currentUserProfile.businessAddress
+                    } else {
+                        // Create a new address
+                        userProfileMessage.businessAddress.toAddress()
+                    }
+                val legalAddress =
+                    if (currentUserProfile.businessAddress == userProfileMessage.businessAddress.toAddress()) {
+                        // Use existing address
+                        currentUserProfile.businessAddress
+                    } else {
+                        // Create a new address
+                        userProfileMessage.businessAddress.toAddress()
+                    }
 
+                val taxIdentifier =
+                    if (currentUserProfile.taxIdentifier == userProfileMessage.taxIdentifier.toTaxIdentifier()) {
+                        // Use existing tax-identifier
+                        currentUserProfile.taxIdentifier
+                    } else {
+                        // Create a new tax-identifier
+                        userProfileMessage.taxIdentifier.toTaxIdentifier()
+                    }
 
                 // User Profile exists so update the existing one.
-                val updatedUserProfile = userProfile.copy(
+                val updatedUserProfile = currentUserProfile.copy(
                     companyName = userProfileMessage.companyName,
                     legalName = userProfileMessage.legalName,
-                    businessAddress = userProfileMessage.businessAddress.toAddress(),
-                    legalAddress = userProfileMessage.legalAddress.toAddress(),
-                    taxIdentifier = userProfileMessage.taxIdentifier.toTaxIdentifier(),
+                    businessAddress = businessAddress,
+                    legalAddress = legalAddress,
+                    taxIdentifier = taxIdentifier,
                     email = userProfileMessage.email,
                     website = userProfileMessage.website
                 )
