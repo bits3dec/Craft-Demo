@@ -1,5 +1,6 @@
 package demo.craft.user.profile.service
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component
 @Component
 class UserProfileService(
     private val userProfileAccess: UserProfileAccess,
-    private val genericCacheManager: GenericCacheManager,
+    private val cacheManager: GenericCacheManager,
     private val userProfileProperties: UserProfileProperties
 ) {
     private val log = KotlinLogging.logger {}
@@ -29,7 +30,13 @@ class UserProfileService(
     // TODO: Use cache
     fun getUserProfile(userId: String): UserProfile {
         log.debug { "Received request in [User-Profile] Controller to fetch business profile." }
-        return userProfileAccess.findUserProfileByUserId(userId)
+
+        return cacheManager.lookup(
+            userId,
+            object : TypeReference<UserProfile>(){}
+        ) {
+            userProfileAccess.findUserProfileByUserId(userId)
+        }
             ?: throw UserProfileNotFoundException(userId)
     }
 }

@@ -23,6 +23,12 @@ class GenericCacheManager(
         configure(DeserializationFeature. FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
 
+    /**
+     * 1. Checks if key is present in the cache or not.
+     * 2. If key is present then return the value.
+     * 3. If key is not present then it is a cache miss.
+     *    Now fetch from the main source and then update the cache.
+     */
     fun <T : Any> lookup(
         key: String,
         valueTypeRef: TypeReference<T>,
@@ -35,7 +41,7 @@ class GenericCacheManager(
             update(key, valueTypeRef, value)
         }
 
-    fun <T> update(
+    private fun <T> update(
         key: String,
         valueTypeRef: TypeReference<T>,
         cacheValue: T,
