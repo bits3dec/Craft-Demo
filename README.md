@@ -12,7 +12,7 @@ Different modules are created keeping in mind separation of concern and re-usabi
       1. **cache**: This is used for caching.
       2. **communication**: This is used to send message to Kafka.
       3. **lock**: Locking mechanism for exclusive access to a shared resource.
-3. **services**
+3. **services**: This module contains the application services.
     1. **user-profile**: This service takes client requests, maintains profile history, profile request status.
         1. **api**: Open API specs
             1. **client**: This generates api interface for the clients.
