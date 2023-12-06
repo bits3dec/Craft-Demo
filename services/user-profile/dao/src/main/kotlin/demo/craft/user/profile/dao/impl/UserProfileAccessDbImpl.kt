@@ -1,17 +1,17 @@
 package demo.craft.user.profile.dao.impl
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import demo.craft.common.domain.enums.Operation
+import demo.craft.common.domain.enums.State
 import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.user.profile.common.exception.UserProfileAlreadyExistsException
 import demo.craft.user.profile.common.exception.UserProfileNotFoundException
 import demo.craft.user.profile.common.exception.UserProfileRequestNotFoundException
 import demo.craft.user.profile.dao.UserProfileAccess
-import demo.craft.user.profile.dao.impl.repository.UserProfileHistoryRepository
-import demo.craft.user.profile.dao.impl.repository.UserProfileRepository
-import demo.craft.user.profile.dao.impl.repository.UserProfileRequestRepository
+import demo.craft.user.profile.dao.impl.repository.*
 import demo.craft.user.profile.dao.toAddress
 import demo.craft.user.profile.dao.toTaxIdentifier
 import demo.craft.user.profile.dao.toUserProfile
@@ -24,12 +24,15 @@ import org.springframework.stereotype.Component
 class UserProfileAccessDbImpl(
     private val userProfileRepository: UserProfileRepository,
     private val userProfileRequestRepository: UserProfileRequestRepository,
-    private val userProfileHistoryRepository: UserProfileHistoryRepository
+    private val userProfileHistoryRepository: UserProfileHistoryRepository,
+    private val addressRepository: AddressRepository,
+    private val taxIdentifierRepository: TaxIdentifierRepository
 ) : UserProfileAccess {
 
     private val objectMapper = jacksonObjectMapper().apply {
         registerModule(JavaTimeModule()) // Register JavaTimeModule to handle Java 8 date/time types
         configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        configure(DeserializationFeature. FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
 
 
@@ -49,10 +52,14 @@ class UserProfileAccessDbImpl(
         val userProfileMessage = objectMapper.readValue(userProfileRequest.newValue, UserProfileMessage::class.java)
         return findUserProfileByUserId(userProfileRequest.userId)
             ?.let { userProfile ->
+                // UPDATE
+
                 // If operation is CREATE then it is expected that there is not user-profile present.
                 if (userProfileRequest.operation == Operation.CREATE) {
                     throw UserProfileAlreadyExistsException(userProfileRequest.userId)
                 }
+
+
 
                 // User Profile exists so update the existing one.
                 val updatedUserProfile = userProfile.copy(
@@ -65,10 +72,13 @@ class UserProfileAccessDbImpl(
                     website = userProfileMessage.website
                 )
 
-                // Save in "user-profile"
-                val savedUserProfile = userProfileRepository.saveAndFlush(updatedUserProfile)
+                // Save in address, tax, user-profile
+                addressRepository.saveAndFlush(updatedUserProfile.businessAddress)
+                addressRepository.saveAndFlush(updatedUserProfile.legalAddress)
+                taxIdentifierRepository.saveAndFlush(updatedUserProfile.taxIdentifier)
+                val persistedUserProfile = userProfileRepository.saveAndFlush(updatedUserProfile)
 
-                // Save in "user-profile-history"
+                // Save in user-profile-history
                 val newVersion =
                     userProfileHistoryRepository.findAllByUserIdOrderByIdAsc(userProfileRequest.userId).last()
                         .userProfileVersion
@@ -77,29 +87,41 @@ class UserProfileAccessDbImpl(
                     UserProfileHistory(
                         userId = userProfileRequest.userId,
                         userProfileVersion = newVersion,
-                        value = objectMapper.writeValueAsString(savedUserProfile),
+                        value = objectMapper.writeValueAsString(persistedUserProfile),
                     )
                 userProfileHistoryRepository.saveAndFlush(userProfileHistory)
-                savedUserProfile
+                persistedUserProfile
             }
             ?: let {
+                // CREATE
+
                 // If operation is UPDATE then it is expected that a user-profile exists.
                 if (userProfileRequest.operation == Operation.UPDATE) {
                     throw UserProfileNotFoundException(userProfileRequest.userId)
                 }
 
                 val newUserProfile = userProfileMessage.toUserProfile(userProfileRequest.userId)
-                val savedUserProfile = userProfileRepository.saveAndFlush(newUserProfile)
+
+                // Save in address, tax, user-profile
+                val persistedBusinessAddress = addressRepository.saveAndFlush(newUserProfile.businessAddress)
+                val persistedLegalAddress = addressRepository.saveAndFlush(newUserProfile.legalAddress)
+                taxIdentifierRepository.saveAndFlush(newUserProfile.taxIdentifier)
+                val persistedUserProfile = userProfileRepository.saveAndFlush(
+                    newUserProfile.copy(
+                        businessAddress = persistedBusinessAddress,
+                        legalAddress = persistedLegalAddress
+                    )
+                )
 
                 val userProfileHistory =
                     UserProfileHistory(
                         userId = userProfileRequest.userId,
                         userProfileVersion = 1, // Version is set to 1 as it is the first entry
-                        value = objectMapper.writeValueAsString(savedUserProfile),
+                        value = objectMapper.writeValueAsString(persistedUserProfile),
                     )
                 userProfileHistoryRepository.saveAndFlush(userProfileHistory)
 
-                savedUserProfile
+                persistedUserProfile
             }
     }
 
@@ -107,18 +129,18 @@ class UserProfileAccessDbImpl(
         return userProfileRequestRepository.saveAndFlush(userProfileRequest)
     }
 
-    override fun updateUserProfileRequest(userProfileRequest: UserProfileRequest): UserProfileRequest {
-        return userProfileRequestRepository
-            .findByUserIdAndRequestId(
-                userId = userProfileRequest.userId,
-                requestId = userProfileRequest.requestId
-            )
+    override fun updateUserProfileRequest(
+        userId: String,
+        requestId: String,
+        state: State
+    ): UserProfileRequest {
+        return userProfileRequestRepository.findByUserIdAndRequestId(userId = userId, requestId = requestId)
             ?.let { currentUserProfileRequest ->
-                userProfileRequestRepository.saveAndFlush(currentUserProfileRequest.copy(state = userProfileRequest.state))
+                userProfileRequestRepository.save(currentUserProfileRequest.copy(state = state))
             } ?: let {
                 throw UserProfileRequestNotFoundException(
-                    userId = userProfileRequest.userId,
-                    requestId = userProfileRequest.requestId
+                    userId = userId,
+                    requestId = requestId
                 )
             }
     }
@@ -127,7 +149,7 @@ class UserProfileAccessDbImpl(
         return userProfileRequestRepository.findByUserIdAndRequestId(userId, requestId)
     }
 
-    override fun findUserProfileRequestByUserId(userId: String): UserProfileRequest? {
+    override fun findUserProfileRequestByUserId(userId: String): List<UserProfileRequest>? {
         return userProfileRequestRepository.findByUserId(userId)
     }
 

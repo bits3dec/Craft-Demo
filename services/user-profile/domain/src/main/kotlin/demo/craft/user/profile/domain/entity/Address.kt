@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 
+// TODO: Implement HashCode and Equals to do deep comparison which is needed incase of updates
 @Entity
 data class Address(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

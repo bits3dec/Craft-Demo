@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface UserProfileRequestRepository : JpaRepository<UserProfileRequest, Long> {
     fun findByUserIdAndRequestId(userId: String, requestId: String): UserProfileRequest?
-    fun findByUserId(userId: String): UserProfileRequest?
+    fun findByUserId(userId: String): List<UserProfileRequest>?
 }

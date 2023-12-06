@@ -1,5 +1,6 @@
 package demo.craft.profile.validator.communication.publisher
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -22,6 +23,7 @@ class ProfileValidatorPublisher(
     private val objectMapper = jacksonObjectMapper().apply {
         registerModule(JavaTimeModule()) // Register JavaTimeModule to handle Java 8 date/time types
         configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        configure(DeserializationFeature. FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
 
     private val kafkaProperties = profileValidatorProperties.kafka

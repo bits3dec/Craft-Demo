@@ -1,5 +1,6 @@
 package demo.craft.user.profile.service
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -18,8 +19,8 @@ import demo.craft.user.profile.mapper.toDomainModel
 import demo.craft.user.profile.mapper.toUserProfileMessage
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
-import javax.transaction.Transactional
 
 @Component
 class UserProfileRequestService(
@@ -32,6 +33,7 @@ class UserProfileRequestService(
     private val objectMapper = jacksonObjectMapper().apply {
         registerModule(JavaTimeModule()) // Register JavaTimeModule to handle Java 8 date/time types
         configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
 
     @Transactional
@@ -54,6 +56,7 @@ class UserProfileRequestService(
         )
         userProfileAccess.createUserProfileRequest(userProfileRequest)
             .also { userProfileRequest ->
+                // Publish trigger message
                 userProfilePublisher.publishProfileRequestMessage(userProfileRequest)
             }
         return userProfileRequest
@@ -87,22 +90,41 @@ class UserProfileRequestService(
             newValue = objectMapper.writeValueAsString(updateBusinessProfileRequest.businessProfile.toDomainModel(userId))
         )
         userProfileAccess.createUserProfileRequest(userProfileRequest)
+            .also { userProfileRequest ->
+                // Publish trigger message
+                userProfilePublisher.publishProfileRequestMessage(userProfileRequest)
+            }
         return userProfileRequest
     }
 
     @Transactional
-    fun commitUserProfileRequest(userProfileRequest: UserProfileRequest): UserProfile {
+    fun commitUserProfileRequest(userId: String, requestId: String, state: State) {
         // Update user-profile-request
-        userProfileAccess.updateUserProfileRequest(userProfileRequest)
-        // Create or Update user-profile
-        return userProfileAccess.createOrUpdateUserProfile(userProfileRequest)
+        val userProfileRequest =
+            userProfileAccess.updateUserProfileRequest(
+                userId = userId,
+                requestId = requestId,
+                state = state
+            )
+
+        // If request state is ACCEPTED then commit the request to user-profile
+        if (userProfileRequest.state == State.ACCEPTED) {
+            userProfileAccess.createOrUpdateUserProfile(userProfileRequest)
+            log.info { "User profile is successfully committed for request-id: $requestId." }
+        } else {
+            log.info {
+                "User profile request is not accepted for request-id: $requestId.. Not committing it to user-profile."
+            }
+        }
     }
 
     private fun checkIfAnyInProgressRequestExistsForUser(userId: String) {
         userProfileAccess.findUserProfileRequestByUserId(userId)
-            ?.takeIf { it.state == State.IN_PROGRESS}
+            ?.filter { it.state == State.IN_PROGRESS }
             ?.let {
-                throw UserProfileRequestAlreadyInProgressException(userId, it.requestId)
+                if (it.isNotEmpty()) {
+                    throw UserProfileRequestAlreadyInProgressException(userId)
+                }
             }
     }
 
