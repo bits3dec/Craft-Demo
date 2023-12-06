@@ -12,6 +12,9 @@ demo:
         userProfileValidationConfirmationTopic: 'user-profile-validation-confirmation'
         # publish
         userProfileRequestConfirmationTopic: 'user-profile-request-confirmation'
+      integration:
+        productRegistry:
+          url: 'http://localhost:8081'
 
 spring:
   application:

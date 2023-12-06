@@ -12,8 +12,10 @@ dependencies {
     implementation(project(":services:user-profile-workflow:common"))
 
     // internal libs
+    implementation("demo.craft:common-domain:0.0.1-SNAPSHOT")
     implementation("demo.craft:common-lib-communication:0.0.1-SNAPSHOT")
     implementation("demo.craft:common-lib-lock:0.0.1-SNAPSHOT")
+    implementation("demo.craft:product-registry-client:0.0.6-SNAPSHOT")
 
     // external libs
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -30,6 +32,8 @@ dependencies {
     implementation("io.github.openfeign:feign-okhttp")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("io.micrometer:micrometer-registry-prometheus") // metrics and tracing
+    implementation("org.springframework.cloud:spring-cloud-openfeign-core")
+    implementation("io.github.openfeign:feign-jackson:10.9")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")

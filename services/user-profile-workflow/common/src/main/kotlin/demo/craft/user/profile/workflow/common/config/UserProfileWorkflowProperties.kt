@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 class UserProfileWorkflowProperties {
     val kafka = KafkaProperties()
     val lock = LockProperties()
+    val integration = IntegrationProperties()
 
     class KafkaProperties {
         // subscribe
@@ -19,5 +20,13 @@ class UserProfileWorkflowProperties {
 
     class LockProperties {
         var timeoutDuration: Duration = Duration.ofSeconds(2)
+    }
+
+    class IntegrationProperties {
+        var productRegistry = ProductRegistryProperties()
+
+        class ProductRegistryProperties {
+            var url: String = ""
+        }
     }
 }
