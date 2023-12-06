@@ -22,5 +22,4 @@ Different modules are created keeping in mind separation of concern and re-usabi
         4. **domain**: This contains the domain objects of the service like entity classes (db classes).
     2. **product-registry**: This service registers the list of products subscribed by the customer.
     3. **user-profile-workflow**: This service is responsible for maintaining the workflows like create, update, etc.
-    4. **product-validator**: This service takes the responsibility of validation of user profile. This contains business logic of specific workflows.
-       service takes the responsibility of validation of user profile.
+    4. **profile-validator**:  This service is responsible for validation of user profile. This contains business logic of the profile validation.
