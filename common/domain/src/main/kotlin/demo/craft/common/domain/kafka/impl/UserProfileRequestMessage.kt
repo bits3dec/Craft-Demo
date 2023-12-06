@@ -37,6 +37,10 @@ data class TaxIdentifierMessage(
     val type: TaxType,
 )
 
+/**
+ * This is the generic "user profile" schema which is to be used across all the services for publishing and subscribing.
+ * This is done to ensure consistency of the user profile schema across all services.
+ */
 data class UserProfileMessage(
     val companyName: String,
     val legalName: String,

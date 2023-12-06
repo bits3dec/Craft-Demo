@@ -11,6 +11,7 @@ demo:
         userProfileRequestTopic: 'user-profile-request'
         userProfileValidationConfirmationTopic: 'user-profile-validation-confirmation'
         # publish
+        userProfileValidationRequestTopic: 'user-profile-validation-request'
         userProfileRequestConfirmationTopic: 'user-profile-request-confirmation'
       integration:
         productRegistry:
