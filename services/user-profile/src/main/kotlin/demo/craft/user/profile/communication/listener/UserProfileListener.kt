@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.common.domain.kafka.impl.UserProfileRequestConfirmationMessage
 import demo.craft.user.profile.common.config.UserProfileProperties
-import demo.craft.user.profile.domain.entity.UserProfileRequest
 import demo.craft.user.profile.service.UserProfileRequestService
 import mu.KotlinLogging
 import org.springframework.kafka.annotation.KafkaListener

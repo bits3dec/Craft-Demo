@@ -3,7 +3,6 @@ package demo.craft.user.profile.controller
 import demo.craft.user.profile.api.BusinessProfileApi
 import demo.craft.user.profile.model.*
 import demo.craft.user.profile.mapper.toApiModel
-import demo.craft.user.profile.service.UserProfileRequestService
 import demo.craft.user.profile.service.UserProfileService
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity

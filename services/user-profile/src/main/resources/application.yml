@@ -10,14 +10,15 @@ demo:
         url: "localhost"
         port: 6379
         readTimeoutInMs: 100
-    user.profile:
-      kafka:
-        # publish
-        userProfileRequestTopic: 'user-profile-request'
-        # subscribe
-        userProfileRequestConfirmationTopic: 'user-profile-request-confirmation'
-      cache:
-        defaultCacheTtlInDuration: 30s # Setting low ttl for demo purpose. In practical, basis the pattern of the change duration we can set the ttl (say we can start with 1 week)
+    user:
+      profile:
+        kafka:
+          # publish
+          userProfileRequestTopic: 'user-profile-request'
+          # subscribe
+          userProfileRequestConfirmationTopic: 'user-profile-request-confirmation'
+        cache:
+          defaultCacheTtlDuration: 120s # Setting low ttl for demo purpose. In practical, basis the pattern of the change duration we can set the ttl (say we can start with 1 week)
 
 spring:
   application:
