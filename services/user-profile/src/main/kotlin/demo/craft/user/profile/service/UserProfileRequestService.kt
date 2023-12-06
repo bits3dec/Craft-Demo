@@ -1,11 +1,13 @@
 package demo.craft.user.profile.service
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import demo.craft.common.domain.enums.Operation
 import demo.craft.common.domain.enums.State
+import demo.craft.user.profile.common.cache.GenericCacheManager
 import demo.craft.user.profile.common.config.UserProfileProperties
 import demo.craft.user.profile.common.exception.UserProfileAlreadyExistsException
 import demo.craft.user.profile.common.exception.UserProfileNotFoundException
@@ -14,6 +16,7 @@ import demo.craft.user.profile.common.exception.UserProfileRequestNotFoundExcept
 import demo.craft.user.profile.common.lock.UserProfileLockManager
 import demo.craft.user.profile.communication.publisher.UserProfilePublisher
 import demo.craft.user.profile.dao.UserProfileAccess
+import demo.craft.user.profile.domain.entity.UserProfile
 import demo.craft.user.profile.domain.entity.UserProfileRequest
 import demo.craft.user.profile.model.*
 import demo.craft.user.profile.mapper.toUserProfileMessage
@@ -26,7 +29,8 @@ import java.util.UUID
 class UserProfileRequestService(
     private val userProfileAccess: UserProfileAccess,
     private val userProfilePublisher: UserProfilePublisher,
-    private val userProfileLockManager: UserProfileLockManager
+    private val userProfileLockManager: UserProfileLockManager,
+    private val cacheManager: GenericCacheManager
 ) {
     private val log = KotlinLogging.logger {}
     private val objectMapper = jacksonObjectMapper().apply {
@@ -113,8 +117,17 @@ class UserProfileRequestService(
 
             // If request state is ACCEPTED then commit the request to user-profile
             if (userProfileRequest.state == State.ACCEPTED) {
-                userProfileAccess.createOrUpdateUserProfile(userProfileRequest)
+                val userProfile = userProfileAccess.createOrUpdateUserProfile(userProfileRequest)
                 log.info { "User profile is successfully committed for request-id: $requestId." }
+
+                // If it is an update then update the cache with the latest value
+                if (userProfileRequest.operation == Operation.UPDATE) {
+                    cacheManager.update(
+                        key = userId,
+                        valueTypeRef = object : TypeReference<UserProfile>(){},
+                        cacheValue = userProfile
+                    )
+                }
             } else {
                 log.info {
                     "User profile request is not accepted for request-id: $requestId.. Not committing it to user-profile."

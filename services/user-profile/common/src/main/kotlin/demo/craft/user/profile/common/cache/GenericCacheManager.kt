@@ -41,7 +41,10 @@ class GenericCacheManager(
             update(key, valueTypeRef, value)
         }
 
-    private fun <T> update(
+    /**
+     * Puts a key-value in the cache
+     */
+    fun <T> update(
         key: String,
         valueTypeRef: TypeReference<T>,
         cacheValue: T,
