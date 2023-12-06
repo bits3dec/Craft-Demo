@@ -1,7 +1,9 @@
-package demo.craft.common.domain.kafka
+package demo.craft.common.domain.kafka.impl
 
 import demo.craft.common.domain.enums.Operation
 import demo.craft.common.domain.enums.Product
+import demo.craft.common.domain.kafka.AbstractKafkaRequestMessage
+import demo.craft.common.domain.kafka.enums.MessageContext
 import java.sql.Timestamp
 
 data class UserProfileValidationRequestMessage(

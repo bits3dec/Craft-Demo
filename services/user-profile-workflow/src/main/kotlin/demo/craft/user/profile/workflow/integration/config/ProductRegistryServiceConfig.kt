@@ -1,4 +1,4 @@
-package demo.craft.user.profile.workflow.integration.product.registry.config
+package demo.craft.user.profile.workflow.integration.config
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import demo.craft.product.registry.client.api.ProductRegistryApi

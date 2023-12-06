@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserProfileWorkflowRepository : JpaRepository<UserProfileWorkflow, Long> {
-    fun findAllByUserIdAndRequestIdOrderByIdAsc(userId: String, requestId: String): List<UserProfileWorkflow>
+    fun findByUserIdAndRequestIdOrderByIdAsc(userId: String, requestId: String): UserProfileWorkflow?
 }
