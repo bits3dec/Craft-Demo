@@ -18,8 +18,9 @@ Different modules are created keeping in mind separation of concern and re-usabi
             1. **client**: This generates api interface for the clients.
             2. **server-stub**: This generates api interface for server controller.
         2. **dao**: This interacts with database
+        3. **common**: This contains the common code like locking, caching, config property class, exception, etc.
+        4. **domain**: This contains the domain objects of the service like entity classes (db classes).
     2. **product-registry**: This service registers the list of products subscribed by the customer.
-    3. **user-profile-workflow**: This service does all the heavy lifting by managing work flow like create, update, etc.
-    4. **product-validator**: This service takes the responsibility of validation of user profile.
-
-
+    3. **user-profile-workflow**: This service is responsible for maintaining the workflows like create, update, etc.
+    4. **product-validator**: This service takes the responsibility of validation of user profile. This contains business logic of specific workflows.
+       service takes the responsibility of validation of user profile.
