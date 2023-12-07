@@ -41,11 +41,6 @@ class ProfileValidatorListener(
             objectMapper.readValue(message, UserProfileValidationRequestMessage::class.java)
         log.info { "Received kafka message. Topic: $topicName. Message: $userProfileValidationRequestMessage" }
 
-        profileValidatorService.createUserProfileValidatorWorkflow(
-            userId = userProfileValidationRequestMessage.userId,
-            requestId = userProfileValidationRequestMessage.requestId,
-            operation = userProfileValidationRequestMessage.operation,
-            userProfileMessage = userProfileValidationRequestMessage.userProfileMessage,
-        )
+        profileValidatorService.createUserProfileValidatorWorkflow(userProfileValidationRequestMessage)
     }
 }
