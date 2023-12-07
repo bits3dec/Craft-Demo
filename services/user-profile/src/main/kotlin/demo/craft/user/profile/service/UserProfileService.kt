@@ -30,6 +30,6 @@ class UserProfileService(
         ) {
             userProfileAccess.findUserProfileByUserId(userId)
         }
-            ?: throw UserProfileNotFoundException(userId)
+            ?: throw UserProfileNotFoundException()
     }
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import demo.craft.common.domain.enums.Operation
 import demo.craft.common.domain.enums.State
+import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.user.profile.common.cache.GenericCacheManager
 import demo.craft.user.profile.common.config.UserProfileProperties
 import demo.craft.user.profile.common.exception.UserProfileAlreadyExistsException
@@ -42,7 +43,7 @@ class UserProfileRequestService(
     @Transactional
     fun triggerCreateUserProfileRequest(
         userId: String,
-        createBusinessProfileRequest: CreateBusinessProfileRequest
+        userProfileMessage: UserProfileMessage,
     ): UserProfileRequest {
         log.debug { "Received request in [User-Profile] Controller to create business profile." }
         return userProfileLockManager.doExclusively(userId) {
@@ -56,7 +57,7 @@ class UserProfileRequestService(
                 userId = userId,
                 operation = Operation.CREATE,
                 state = State.IN_PROGRESS,
-                newValue = objectMapper.writeValueAsString(createBusinessProfileRequest.businessProfile.toUserProfileMessage())
+                newValue = objectMapper.writeValueAsString(userProfileMessage)
             )
             userProfileAccess.createUserProfileRequest(userProfileRequest)
                 .also { userProfileRequest ->
@@ -72,13 +73,13 @@ class UserProfileRequestService(
         requestId: String
     ): UserProfileRequest {
         return userProfileAccess.findUserProfileRequestByUserIdAndRequestId(userId, requestId)
-            ?: throw UserProfileRequestNotFoundException(userId, requestId)
+            ?: throw UserProfileRequestNotFoundException(requestId)
     }
 
     @Transactional
     fun triggerUpdateUserProfileRequest(
         userId: String,
-        updateBusinessProfileRequest: UpdateBusinessProfileRequest
+        userProfileMessage: UserProfileMessage,
     ): UserProfileRequest {
         log.debug { "Received request in [User-Profile] Controller to update business profile." }
 
@@ -93,7 +94,7 @@ class UserProfileRequestService(
                 userId = userId,
                 operation = Operation.UPDATE,
                 state = State.IN_PROGRESS,
-                newValue = objectMapper.writeValueAsString(updateBusinessProfileRequest.businessProfile.toUserProfileMessage())
+                newValue = objectMapper.writeValueAsString(userProfileMessage)
             )
             userProfileAccess.createUserProfileRequest(userProfileRequest)
                 .also { userProfileRequest ->
@@ -141,7 +142,7 @@ class UserProfileRequestService(
             ?.filter { it.state == State.IN_PROGRESS }
             ?.let {
                 if (it.isNotEmpty()) {
-                    throw UserProfileRequestAlreadyInProgressException(userId)
+                    throw UserProfileRequestAlreadyInProgressException()
                 }
             }
     }
@@ -149,14 +150,14 @@ class UserProfileRequestService(
     private fun assertUserProfileShouldExistForUser(userId: String) {
         userProfileAccess.findUserProfileByUserId(userId)
             ?: let {
-                throw UserProfileNotFoundException(userId)
+                throw UserProfileNotFoundException()
             }
     }
 
     private fun assertUserProfileShouldNotExistForUser(userId: String) {
         userProfileAccess.findUserProfileByUserId(userId)
             ?. let {
-                throw UserProfileAlreadyExistsException(userId)
+                throw UserProfileAlreadyExistsException()
             }
     }
 }

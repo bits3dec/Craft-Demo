@@ -4,14 +4,18 @@ open class UserProfileException(
     override val message: String,
 ) : RuntimeException(message)
 
-class UserProfileNotFoundException(userId: String) :
-    UserProfileException("User Profile not found for userId: $userId")
+class UserProfileNotFoundException :
+    UserProfileException("User profile not found")
 
-class UserProfileRequestNotFoundException(userId: String, requestId: String) :
-    UserProfileException("User Profile Request not found for userId: $userId, requestId: $requestId")
+class UserProfileRequestNotFoundException(requestId: String) :
+    UserProfileException("User profile Request not found for requestId: $requestId")
 
-class UserProfileRequestAlreadyInProgressException(userId: String) :
-    UserProfileException("User Profile Request already in progress for userId: $userId.")
+class UserProfileRequestAlreadyInProgressException :
+    UserProfileException("User profile Request already in progress")
 
-class UserProfileAlreadyExistsException(userId: String) :
-    UserProfileException("User Profile already exists for userId: $userId")
+class UserProfileAlreadyExistsException :
+    UserProfileException("User profile already exists")
+
+
+class InvalidUserProfileRequestException(invalidFields: String) :
+    UserProfileException("Invalid User profile request. Invalid Fields: $invalidFields")
