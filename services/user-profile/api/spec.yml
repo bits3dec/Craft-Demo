@@ -8,28 +8,29 @@ info:
 servers:
   - url: "http://localhost:8080"
 
+
 paths:
-  /user-profile/v1/business-profile:
+  /user-profile/v1/profile:
     get:
       tags:
-        - business-profile
-      operationId: getBusinessProfile
-      summary: Get business profile of the user
+        - user-profile
+      operationId: getUserProfile
+      summary: Get user profile of the user
       parameters:
         - $ref: "#/components/parameters/userId"
       responses:
         "200":
-          description: Business profile of the user
+          description: User profile of the user
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetBusinessProfileResponse"
+                $ref: "#/components/schemas/GetUserProfileResponse"
 
     post:
       tags:
-        - business-profile-request
-      operationId: createBusinessProfile
-      summary: Create a new business profile of the user
+        - user-profile-request
+      operationId: createUserProfile
+      summary: Create a new user profile of the user
       parameters:
         - $ref: "#/components/parameters/userId"
       requestBody:
@@ -37,20 +38,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateBusinessProfileRequest"
+              $ref: "#/components/schemas/CreateUserProfileRequest"
       responses:
         "200":
-          description: Business profile created successfully
+          description: User profile created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CreateBusinessProfileResponse"
+                $ref: "#/components/schemas/CreateUserProfileResponse"
 
     put:
       tags:
-        - business-profile-request
-      operationId: updateBusinessProfile
-      summary: Update business profile of the user
+        - user-profile-request
+      operationId: updateUserProfile
+      summary: Update user profile of the user
       parameters:
         - $ref: "#/components/parameters/userId"
       requestBody:
@@ -58,31 +59,31 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UpdateBusinessProfileRequest"
+              $ref: "#/components/schemas/UpdateUserProfileRequest"
       responses:
         "200":
-          description: Business profile created successfully
+          description: User profile created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UpdateBusinessProfileResponse"
+                $ref: "#/components/schemas/UpdateUserProfileResponse"
 
-  /user-profile/v1/business-profile/request-details:
+  /user-profile/v1/profile/request-details:
     get:
       tags:
-        - business-profile-request
-      operationId: getBusinessProfileRequestDetails
-      summary: Get business profile request details
+        - user-profile-request
+      operationId: getUserProfileRequestDetails
+      summary: Get user profile request details
       parameters:
         - $ref: "#/components/parameters/userId"
         - $ref: "#/components/parameters/requestId"
       responses:
         "200":
-          description: Business profile request details
+          description: User profile request details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetBusinessProfileRequestDetailsResponse"
+                $ref: "#/components/schemas/GetUserProfileRequestDetailsResponse"
 
 components:
   parameters:
@@ -101,7 +102,7 @@ components:
         type: string
 
   schemas:
-    BusinessProfile:
+    UserProfile:
       type: object
       required:
         - companyName
@@ -159,39 +160,23 @@ components:
       type: string
       enum: [CREATE, UPDATE]
 
-    GetBusinessProfileResponse:
+    GetUserProfileResponse:
       type: object
       required:
-        - businessProfile
+        - userProfile
       properties:
-        businessProfile:
-          $ref: "#/components/schemas/BusinessProfile"
+        userProfile:
+          $ref: "#/components/schemas/UserProfile"
 
-    CreateBusinessProfileRequest:
+    CreateUserProfileRequest:
       type: object
       required:
-        - businessProfile
+        - userProfile
       properties:
-        businessProfile:
-          $ref: "#/components/schemas/BusinessProfile"
+        userProfile:
+          $ref: "#/components/schemas/UserProfile"
 
-    CreateBusinessProfileResponse:
-      type: object
-      required:
-        - requestUuid
-      properties:
-        requestUuid:
-          type: string
-
-    UpdateBusinessProfileRequest:
-      type: object
-      required:
-        - businessProfile
-      properties:
-        businessProfile:
-          $ref: "#/components/schemas/BusinessProfile"
-
-    UpdateBusinessProfileResponse:
+    CreateUserProfileResponse:
       type: object
       required:
         - requestUuid
@@ -199,15 +184,31 @@ components:
         requestUuid:
           type: string
 
-    GetBusinessProfileRequestDetailsResponse:
+    UpdateUserProfileRequest:
+      type: object
+      required:
+        - userProfile
+      properties:
+        userProfile:
+          $ref: "#/components/schemas/UserProfile"
+
+    UpdateUserProfileResponse:
+      type: object
+      required:
+        - requestUuid
+      properties:
+        requestUuid:
+          type: string
+
+    GetUserProfileRequestDetailsResponse:
       type: object
       required:
         - requestDetails
       properties:
         requestDetails:
-          $ref: "#/components/schemas/BusinessProfileRequestDetails"
+          $ref: "#/components/schemas/UserProfileRequestDetails"
 
-    BusinessProfileRequestDetails:
+    UserProfileRequestDetails:
       type: object
       required:
         - requestId

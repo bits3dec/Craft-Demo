@@ -16,8 +16,7 @@ import org.springframework.stereotype.Component
 @Component
 class UserProfileService(
     private val userProfileAccess: UserProfileAccess,
-    private val cacheManager: GenericCacheManager,
-    private val userProfileProperties: UserProfileProperties
+    private val cacheManager: GenericCacheManager
 ) {
     private val log = KotlinLogging.logger {}
 
