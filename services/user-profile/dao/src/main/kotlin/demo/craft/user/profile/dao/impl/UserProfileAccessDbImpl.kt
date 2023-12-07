@@ -56,7 +56,7 @@ class UserProfileAccessDbImpl(
 
                 // If operation is CREATE then it is expected that there is not user-profile present.
                 if (userProfileRequest.operation == Operation.CREATE) {
-                    throw UserProfileAlreadyExistsException(userProfileRequest.userId)
+                    throw UserProfileAlreadyExistsException()
                 }
 
                 val businessAddress =
@@ -121,7 +121,7 @@ class UserProfileAccessDbImpl(
 
                 // If operation is UPDATE then it is expected that a user-profile exists.
                 if (userProfileRequest.operation == Operation.UPDATE) {
-                    throw UserProfileNotFoundException(userProfileRequest.userId)
+                    throw UserProfileNotFoundException()
                 }
 
                 val newUserProfile = userProfileMessage.toUserProfile(userProfileRequest.userId)
@@ -162,10 +162,7 @@ class UserProfileAccessDbImpl(
             ?.let { currentUserProfileRequest ->
                 userProfileRequestRepository.save(currentUserProfileRequest.copy(state = state))
             } ?: let {
-                throw UserProfileRequestNotFoundException(
-                    userId = userId,
-                    requestId = requestId
-                )
+                throw UserProfileRequestNotFoundException(requestId)
             }
     }
 

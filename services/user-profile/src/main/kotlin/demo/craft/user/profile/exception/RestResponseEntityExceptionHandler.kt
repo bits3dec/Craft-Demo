@@ -26,6 +26,7 @@ class RestResponseEntityExceptionHandler(
         UserProfileRequestNotFoundException::class to HttpStatus.NOT_FOUND,
         UserProfileRequestAlreadyInProgressException::class to HttpStatus.CONFLICT,
         UserProfileAlreadyExistsException::class to HttpStatus.CONFLICT,
+        InvalidUserProfileRequestException::class to HttpStatus.BAD_REQUEST
     )
 
     @ExceptionHandler
