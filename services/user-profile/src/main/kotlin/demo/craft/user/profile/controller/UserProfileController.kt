@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class BusinessProfileController(
+class UserProfileController(
     val userProfileRequestService: UserProfileService
 ) : BusinessProfileApi {
     private val log = KotlinLogging.logger {}
@@ -20,7 +20,7 @@ class BusinessProfileController(
         log.debug { "Received request in [User-Profile] Controller to create business profile." }
         return ResponseEntity.ok(
             GetBusinessProfileResponse(
-                businessProfile = userProfileRequestService.getUserProfile(xMinusUserMinusId).toApiModel()
+                userProfile = userProfileRequestService.getUserProfile(xMinusUserMinusId).toApiModel()
             )
         )
     }

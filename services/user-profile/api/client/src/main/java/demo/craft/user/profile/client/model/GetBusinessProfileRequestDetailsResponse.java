@@ -13,31 +13,32 @@ import javax.validation.constraints.*;
 /**
  * GetBusinessProfileRequestDetailsResponse
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-12-04T13:32:27.296+05:30[Asia/Kolkata]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-12-07T14:53:57.605242+05:30[Asia/Kolkata]")
 
 public class GetBusinessProfileRequestDetailsResponse   {
-  @JsonProperty("requestStatus")
-  private BusinessProfileRequestDetails requestStatus;
+  @JsonProperty("requestDetails")
+  private BusinessProfileRequestDetails requestDetails;
 
-  public GetBusinessProfileRequestDetailsResponse requestStatus(BusinessProfileRequestDetails requestStatus) {
-    this.requestStatus = requestStatus;
+  public GetBusinessProfileRequestDetailsResponse requestDetails(BusinessProfileRequestDetails requestDetails) {
+    this.requestDetails = requestDetails;
     return this;
   }
 
   /**
-   * Get requestStatus
-   * @return requestStatus
+   * Get requestDetails
+   * @return requestDetails
   */
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(required = true, value = "")
+  @NotNull
 
   @Valid
 
-  public BusinessProfileRequestDetails getRequestStatus() {
-    return requestStatus;
+  public BusinessProfileRequestDetails getRequestDetails() {
+    return requestDetails;
   }
 
-  public void setRequestStatus(BusinessProfileRequestDetails requestStatus) {
-    this.requestStatus = requestStatus;
+  public void setRequestDetails(BusinessProfileRequestDetails requestDetails) {
+    this.requestDetails = requestDetails;
   }
 
 
@@ -50,12 +51,12 @@ public class GetBusinessProfileRequestDetailsResponse   {
       return false;
     }
     GetBusinessProfileRequestDetailsResponse getBusinessProfileRequestDetailsResponse = (GetBusinessProfileRequestDetailsResponse) o;
-    return Objects.equals(this.requestStatus, getBusinessProfileRequestDetailsResponse.requestStatus);
+    return Objects.equals(this.requestDetails, getBusinessProfileRequestDetailsResponse.requestDetails);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(requestStatus);
+    return Objects.hash(requestDetails);
   }
 
   @Override
@@ -63,7 +64,7 @@ public class GetBusinessProfileRequestDetailsResponse   {
     StringBuilder sb = new StringBuilder();
     sb.append("class GetBusinessProfileRequestDetailsResponse {\n");
     
-    sb.append("    requestStatus: ").append(toIndentedString(requestStatus)).append("\n");
+    sb.append("    requestDetails: ").append(toIndentedString(requestDetails)).append("\n");
     sb.append("}");
     return sb.toString();
   }

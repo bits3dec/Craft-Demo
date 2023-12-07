@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 internal class UserProfileValidatorKtTest {
+
     private val validUserProfileMessage =
         UserProfileMessage(
             companyName = "COMPANY_1",

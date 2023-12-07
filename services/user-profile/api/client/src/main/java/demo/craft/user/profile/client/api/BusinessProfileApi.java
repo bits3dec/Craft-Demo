@@ -5,11 +5,7 @@
  */
 package demo.craft.user.profile.client.api;
 
-import demo.craft.user.profile.client.model.CreateBusinessProfileRequest;
-import demo.craft.user.profile.client.model.CreateBusinessProfileResponse;
 import demo.craft.user.profile.client.model.GetBusinessProfileResponse;
-import demo.craft.user.profile.client.model.UpdateBusinessProfileRequest;
-import demo.craft.user.profile.client.model.UpdateBusinessProfileResponse;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,28 +27,11 @@ import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-12-04T13:32:27.296+05:30[Asia/Kolkata]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-12-07T14:53:57.605242+05:30[Asia/Kolkata]")
 
 @Validated
 @Api(value = "BusinessProfile", description = "the BusinessProfile API")
 public interface BusinessProfileApi {
-
-    /**
-     * POST /user-profile/v1/business-profile : Create a new business profile of the user
-     *
-     * @param xUserId  (required)
-     * @param createBusinessProfileRequest  (required)
-     * @return Business profile created successfully (status code 200)
-     */
-    @ApiOperation(value = "Create a new business profile of the user", nickname = "createBusinessProfile", notes = "", response = CreateBusinessProfileResponse.class, tags={ "business-profile", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Business profile created successfully", response = CreateBusinessProfileResponse.class) })
-    @RequestMapping(value = "/user-profile/v1/business-profile",
-        produces = { "application/json" }, 
-        consumes = { "application/json" },
-        method = RequestMethod.POST)
-    ResponseEntity<CreateBusinessProfileResponse> createBusinessProfile(@ApiParam(value = "" ,required=true) @RequestHeader(value="x-user-id", required=true) String xUserId,@ApiParam(value = "" ,required=true )  @Valid @RequestBody CreateBusinessProfileRequest createBusinessProfileRequest);
-
 
     /**
      * GET /user-profile/v1/business-profile : Get business profile of the user
@@ -67,22 +46,5 @@ public interface BusinessProfileApi {
         produces = { "application/json" }, 
         method = RequestMethod.GET)
     ResponseEntity<GetBusinessProfileResponse> getBusinessProfile(@ApiParam(value = "" ,required=true) @RequestHeader(value="x-user-id", required=true) String xUserId);
-
-
-    /**
-     * PUT /user-profile/v1/business-profile : Update business profile of the user
-     *
-     * @param xUserId  (required)
-     * @param updateBusinessProfileRequest  (required)
-     * @return Business profile created successfully (status code 200)
-     */
-    @ApiOperation(value = "Update business profile of the user", nickname = "updateBusinessProfile", notes = "", response = UpdateBusinessProfileResponse.class, tags={ "business-profile", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Business profile created successfully", response = UpdateBusinessProfileResponse.class) })
-    @RequestMapping(value = "/user-profile/v1/business-profile",
-        produces = { "application/json" }, 
-        consumes = { "application/json" },
-        method = RequestMethod.PUT)
-    ResponseEntity<UpdateBusinessProfileResponse> updateBusinessProfile(@ApiParam(value = "" ,required=true) @RequestHeader(value="x-user-id", required=true) String xUserId,@ApiParam(value = "" ,required=true )  @Valid @RequestBody UpdateBusinessProfileRequest updateBusinessProfileRequest);
 
 }

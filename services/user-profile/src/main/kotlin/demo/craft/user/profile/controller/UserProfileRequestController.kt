@@ -1,32 +1,22 @@
 package demo.craft.user.profile.controller
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.user.profile.api.BusinessProfileRequestApi
 import demo.craft.user.profile.common.exception.InvalidUserProfileRequestException
 import demo.craft.user.profile.controller.validations.validateFields
 import demo.craft.user.profile.model.*
 import demo.craft.user.profile.mapper.toApiModel
-import demo.craft.user.profile.mapper.toUserProfileMessage
 import demo.craft.user.profile.service.UserProfileRequestService
+import demo.craft.user.profile.toUserProfileMessage
 import mu.KotlinLogging
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class BusinessProfileRequestController(
+class UserProfileRequestController(
     val userProfileRequestService: UserProfileRequestService
 ) : BusinessProfileRequestApi {
     private val log = KotlinLogging.logger {}
-
-    private val objectMapper = jacksonObjectMapper().apply {
-        registerModule(JavaTimeModule()) // Register JavaTimeModule to handle Java 8 date/time types
-        configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    }
 
     override fun createBusinessProfile(
         xMinusUserMinusId: String,
@@ -34,7 +24,7 @@ class BusinessProfileRequestController(
     ): ResponseEntity<CreateBusinessProfileResponse> {
         log.debug { "Received request in [User-Profile] Controller to create business profile." }
 
-        val userProfileMessage = createBusinessProfileRequest.businessProfile.toUserProfileMessage()
+        val userProfileMessage = createBusinessProfileRequest.userProfile.toUserProfileMessage()
         validate(xMinusUserMinusId, userProfileMessage)
 
         return ResponseEntity.ok(
@@ -62,7 +52,7 @@ class BusinessProfileRequestController(
     ): ResponseEntity<UpdateBusinessProfileResponse> {
         log.debug { "Received request in [User-Profile] Controller to update business profile." }
 
-        val userProfileMessage = updateBusinessProfileRequest.businessProfile.toUserProfileMessage()
+        val userProfileMessage = updateBusinessProfileRequest.userProfile.toUserProfileMessage()
         validate(xMinusUserMinusId, userProfileMessage)
 
         return ResponseEntity.ok(

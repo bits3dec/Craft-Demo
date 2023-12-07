@@ -14,7 +14,7 @@ import javax.validation.constraints.*;
 /**
  * BusinessProfileRequestDetails
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-12-04T13:32:27.296+05:30[Asia/Kolkata]")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2023-12-07T14:53:57.605242+05:30[Asia/Kolkata]")
 
 public class BusinessProfileRequestDetails   {
   @JsonProperty("requestId")

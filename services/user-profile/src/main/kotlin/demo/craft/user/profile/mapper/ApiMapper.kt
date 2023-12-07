@@ -5,13 +5,11 @@ import demo.craft.common.domain.enums.State
 import demo.craft.common.domain.enums.TaxType
 import demo.craft.user.profile.domain.entity.Address
 import demo.craft.user.profile.domain.entity.TaxIdentifier
-import demo.craft.user.profile.domain.entity.UserProfile
 import demo.craft.user.profile.domain.entity.UserProfileRequest
-import demo.craft.user.profile.model.BusinessProfile
 import demo.craft.user.profile.model.BusinessProfileRequestDetails
 
-fun UserProfile.toApiModel(): demo.craft.user.profile.model.BusinessProfile =
-    BusinessProfile(
+fun demo.craft.user.profile.domain.entity.UserProfile.toApiModel(): demo.craft.user.profile.model.UserProfile =
+    demo.craft.user.profile.model.UserProfile(
         companyName = this.companyName,
         legalName = this.legalName,
         businessAddress = this.businessAddress.toApiModel(),
@@ -22,8 +20,8 @@ fun UserProfile.toApiModel(): demo.craft.user.profile.model.BusinessProfile =
         website = this.website,
     )
 
-fun demo.craft.user.profile.model.BusinessProfile.toDomainModel(userId: String): UserProfile =
-    UserProfile(
+fun demo.craft.user.profile.model.UserProfile.toDomainModel(userId: String): demo.craft.user.profile.domain.entity.UserProfile =
+    demo.craft.user.profile.domain.entity.UserProfile(
         userId = userId,
         companyName = this.companyName,
         legalName = this.legalName,
