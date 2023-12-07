@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import demo.craft.common.domain.kafka.impl.UserProfileMessage
-import demo.craft.user.profile.api.BusinessProfileRequestApi
+import demo.craft.user.profile.api.UserProfileRequestApi
 import demo.craft.user.profile.common.exception.InvalidUserProfileRequestException
 import demo.craft.user.profile.controller.validations.validateFields
 import demo.craft.user.profile.model.*
@@ -17,56 +17,50 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class BusinessProfileRequestController(
+class UserProfileRequestController(
     val userProfileRequestService: UserProfileRequestService
-) : BusinessProfileRequestApi {
+) : UserProfileRequestApi {
     private val log = KotlinLogging.logger {}
 
-    private val objectMapper = jacksonObjectMapper().apply {
-        registerModule(JavaTimeModule()) // Register JavaTimeModule to handle Java 8 date/time types
-        configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-        configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    }
-
-    override fun createBusinessProfile(
+    override fun createUserProfile(
         xMinusUserMinusId: String,
-        createBusinessProfileRequest: CreateBusinessProfileRequest
-    ): ResponseEntity<CreateBusinessProfileResponse> {
+        createBusinessProfileRequest: CreateUserProfileRequest
+    ): ResponseEntity<CreateUserProfileResponse> {
         log.debug { "Received request in [User-Profile] Controller to create business profile." }
 
-        val userProfileMessage = createBusinessProfileRequest.businessProfile.toUserProfileMessage()
+        val userProfileMessage = createBusinessProfileRequest.userProfile.toUserProfileMessage()
         validate(xMinusUserMinusId, userProfileMessage)
 
         return ResponseEntity.ok(
-            CreateBusinessProfileResponse(
+            CreateUserProfileResponse(
                 requestUuid = userProfileRequestService.triggerCreateUserProfileRequest(xMinusUserMinusId, userProfileMessage).requestId
             )
         )
     }
 
-    override fun getBusinessProfileRequestDetails(
+    override fun getUserProfileRequestDetails(
         xMinusUserMinusId: String,
         requestId: String
-    ): ResponseEntity<GetBusinessProfileRequestDetailsResponse> {
+    ): ResponseEntity<GetUserProfileRequestDetailsResponse> {
         log.debug { "Received request in [User-Profile] Controller to fetch business profile." }
         return ResponseEntity.ok(
-            GetBusinessProfileRequestDetailsResponse(
+            GetUserProfileRequestDetailsResponse(
                 requestDetails = userProfileRequestService.getUserProfileRequestDetails(xMinusUserMinusId, requestId).toApiModel()
             )
         )
     }
 
-    override fun updateBusinessProfile(
+    override fun updateUserProfile(
         xMinusUserMinusId: String,
-        updateBusinessProfileRequest: UpdateBusinessProfileRequest
-    ): ResponseEntity<UpdateBusinessProfileResponse> {
+        updateBusinessProfileRequest: UpdateUserProfileRequest
+    ): ResponseEntity<UpdateUserProfileResponse> {
         log.debug { "Received request in [User-Profile] Controller to update business profile." }
 
-        val userProfileMessage = updateBusinessProfileRequest.businessProfile.toUserProfileMessage()
+        val userProfileMessage = updateBusinessProfileRequest.userProfile.toUserProfileMessage()
         validate(xMinusUserMinusId, userProfileMessage)
 
         return ResponseEntity.ok(
-            UpdateBusinessProfileResponse(
+            UpdateUserProfileResponse(
                 requestUuid = userProfileRequestService.triggerUpdateUserProfileRequest(xMinusUserMinusId, userProfileMessage).requestId
             )
         )

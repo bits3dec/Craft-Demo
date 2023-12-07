@@ -4,9 +4,9 @@ import demo.craft.common.domain.enums.TaxType
 import demo.craft.common.domain.kafka.impl.AddressMessage
 import demo.craft.common.domain.kafka.impl.TaxIdentifierMessage
 import demo.craft.common.domain.kafka.impl.UserProfileMessage
-import demo.craft.user.profile.model.BusinessProfile
+import demo.craft.user.profile.model.UserProfile
 
-fun BusinessProfile.toUserProfileMessage() =
+fun UserProfile.toUserProfileMessage() =
     UserProfileMessage(
         companyName = this.companyName,
         legalName = this.legalName,

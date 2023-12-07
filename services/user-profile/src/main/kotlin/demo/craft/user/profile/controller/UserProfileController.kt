@@ -1,6 +1,6 @@
 package demo.craft.user.profile.controller
 
-import demo.craft.user.profile.api.BusinessProfileApi
+import demo.craft.user.profile.api.UserProfileApi
 import demo.craft.user.profile.model.*
 import demo.craft.user.profile.mapper.toApiModel
 import demo.craft.user.profile.service.UserProfileService
@@ -9,18 +9,18 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class BusinessProfileController(
+class UserProfileController(
     val userProfileRequestService: UserProfileService
-) : BusinessProfileApi {
+) : UserProfileApi {
     private val log = KotlinLogging.logger {}
 
-    override fun getBusinessProfile(
+    override fun getUserProfile(
         xMinusUserMinusId: String,
-    ): ResponseEntity<GetBusinessProfileResponse> {
+    ): ResponseEntity<GetUserProfileResponse> {
         log.debug { "Received request in [User-Profile] Controller to create business profile." }
         return ResponseEntity.ok(
-            GetBusinessProfileResponse(
-                businessProfile = userProfileRequestService.getUserProfile(xMinusUserMinusId).toApiModel()
+            GetUserProfileResponse(
+                userProfile = userProfileRequestService.getUserProfile(xMinusUserMinusId).toApiModel()
             )
         )
     }

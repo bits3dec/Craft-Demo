@@ -7,11 +7,10 @@ import demo.craft.user.profile.domain.entity.Address
 import demo.craft.user.profile.domain.entity.TaxIdentifier
 import demo.craft.user.profile.domain.entity.UserProfile
 import demo.craft.user.profile.domain.entity.UserProfileRequest
-import demo.craft.user.profile.model.BusinessProfile
-import demo.craft.user.profile.model.BusinessProfileRequestDetails
+import demo.craft.user.profile.model.UserProfileRequestDetails
 
-fun UserProfile.toApiModel(): demo.craft.user.profile.model.BusinessProfile =
-    BusinessProfile(
+fun UserProfile.toApiModel(): demo.craft.user.profile.model.UserProfile =
+    demo.craft.user.profile.model.UserProfile(
         companyName = this.companyName,
         legalName = this.legalName,
         businessAddress = this.businessAddress.toApiModel(),
@@ -22,7 +21,7 @@ fun UserProfile.toApiModel(): demo.craft.user.profile.model.BusinessProfile =
         website = this.website,
     )
 
-fun demo.craft.user.profile.model.BusinessProfile.toDomainModel(userId: String): UserProfile =
+fun demo.craft.user.profile.model.UserProfile.toDomainModel(userId: String): UserProfile =
     UserProfile(
         userId = userId,
         companyName = this.companyName,
@@ -38,8 +37,8 @@ fun demo.craft.user.profile.model.BusinessProfile.toDomainModel(userId: String):
         website = this.website,
     )
 
-fun UserProfileRequest.toApiModel(): demo.craft.user.profile.model.BusinessProfileRequestDetails =
-    BusinessProfileRequestDetails(
+fun UserProfileRequest.toApiModel(): demo.craft.user.profile.model.UserProfileRequestDetails =
+    UserProfileRequestDetails(
         requestId = this.requestId,
         operation = this.operation.toApiModel(),
         status = this.state.toApiModel(),

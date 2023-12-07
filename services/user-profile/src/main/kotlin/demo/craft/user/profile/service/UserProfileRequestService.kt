@@ -9,7 +9,6 @@ import demo.craft.common.domain.enums.Operation
 import demo.craft.common.domain.enums.State
 import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.user.profile.common.cache.GenericCacheManager
-import demo.craft.user.profile.common.config.UserProfileProperties
 import demo.craft.user.profile.common.exception.UserProfileAlreadyExistsException
 import demo.craft.user.profile.common.exception.UserProfileNotFoundException
 import demo.craft.user.profile.common.exception.UserProfileRequestAlreadyInProgressException
@@ -19,8 +18,6 @@ import demo.craft.user.profile.communication.publisher.UserProfilePublisher
 import demo.craft.user.profile.dao.UserProfileAccess
 import demo.craft.user.profile.domain.entity.UserProfile
 import demo.craft.user.profile.domain.entity.UserProfileRequest
-import demo.craft.user.profile.model.*
-import demo.craft.user.profile.mapper.toUserProfileMessage
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
