@@ -26,7 +26,7 @@ class QuickBooksAccountingImpl : QuickBooksAccountingService {
 
         // Else successful
         return ValidationResult(
-            decision = ValidationDecision.SUCCESSFULL,
+            decision = ValidationDecision.SUCCESSFUL,
             failureReason = null
         )
     }

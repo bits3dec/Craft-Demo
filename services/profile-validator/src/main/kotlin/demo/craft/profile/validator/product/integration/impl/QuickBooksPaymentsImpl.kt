@@ -25,7 +25,7 @@ class QuickBooksPaymentsImpl : QuickBooksPaymentsService {
 
         // Else successful
         return ValidationResult(
-            decision = ValidationDecision.SUCCESSFULL,
+            decision = ValidationDecision.SUCCESSFUL,
             failureReason = null
         )
     }

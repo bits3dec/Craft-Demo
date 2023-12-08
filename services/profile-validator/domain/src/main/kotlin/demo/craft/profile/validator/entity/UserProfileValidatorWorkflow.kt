@@ -3,6 +3,7 @@ package demo.craft.profile.validator.entity
 import demo.craft.common.domain.enums.Operation
 import demo.craft.common.domain.enums.State
 import demo.craft.profile.validator.entity.enums.ValidationType
+import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
 import java.time.LocalDateTime
 import javax.persistence.*
@@ -23,6 +24,8 @@ data class UserProfileValidatorWorkflow(
     val validationType: ValidationType,
     @Enumerated(EnumType.STRING)
     val state: State,
+
+    @CreationTimestamp
     val createdAt: LocalDateTime? = null,
     @UpdateTimestamp
     val updatedAt: LocalDateTime? = null,

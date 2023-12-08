@@ -4,18 +4,18 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import demo.craft.common.domain.enums.Operation
 import demo.craft.common.domain.enums.Product
 import demo.craft.common.domain.enums.State
-import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.common.domain.kafka.impl.UserProfileValidationConfirmationMessage
 import demo.craft.common.domain.kafka.impl.UserProfileValidationRequestMessage
 import demo.craft.profile.validator.ValidationDecision
 import demo.craft.profile.validator.ValidationResult
+import demo.craft.profile.validator.common.exception.InvalidUserProfileValidatorStateException
 import demo.craft.profile.validator.communication.publisher.ProfileValidatorPublisher
 import demo.craft.profile.validator.dao.ProfileValidatorWorkflowAccess
+import demo.craft.profile.validator.entity.UserProfileValidatorWorkflow
 import demo.craft.profile.validator.entity.enums.ValidationType
-import demo.craft.profile.validator.service.validation.ValidationStrategyRetriever
+import demo.craft.profile.validator.service.strategy.ValidationStrategyRetriever
 import mu.KotlinLogging
 import org.springframework.stereotype.Component
 import java.sql.Timestamp
@@ -45,6 +45,10 @@ class ProfileValidatorService(
      * Algorithm:
      * Profile validation returns "ACCEPTED" only if all validations (at each product level) are true.
      * If any one of the product level validations are un-successful then reject the request.
+     *
+     * TODO:
+     *  1. Parallely call the validation rules.
+     *  2. Add retryer mechanism to recover in case of unknown failures and make it fault tolerant.
      */
     fun createUserProfileValidatorWorkflow(userProfileValidationRequestMessage: UserProfileValidationRequestMessage) {
         val userId = userProfileValidationRequestMessage.userId
@@ -71,7 +75,33 @@ class ProfileValidatorService(
             val result = validationStrategyRetriever.getValidationStrategy(validationType)
                 .validate(userId, userProfileMessage)
             totalResults.add(result)
+
+            val state = when (result.decision) {
+                ValidationDecision.SUCCESSFUL -> {
+                    State.ACCEPTED
+                }
+                ValidationDecision.FAILED -> {
+                    State.REJECTED
+                }
+                else -> {
+                    throw InvalidUserProfileValidatorStateException(userId, requestId)
+                }
+            }
+            val userProfileValidatorWorkflow =
+                UserProfileValidatorWorkflow(
+                    userId = userProfileValidationRequestMessage.userId,
+                    requestId = userProfileValidationRequestMessage.requestId,
+                    newValue = objectMapper.writeValueAsString(userProfileValidationRequestMessage.userProfileMessage),
+                    operation = userProfileValidationRequestMessage.operation,
+                    validationType = validationType,
+                    state = state
+                )
+            userProfileValidatorWorkflowAccess.createProfileValidatorWorkflow(
+                userProfileValidatorWorkflow = userProfileValidatorWorkflow,
+                failureReason = result.failureReason
+            )
         }
+
 
         // Get failed results
         val failedResults =
@@ -101,8 +131,6 @@ class ProfileValidatorService(
                     failureReason = null
                 )
             }
-
-        // TODO: Persist the results in DB
 
         profileValidatorPublisher.publishProfileRequestMessage(userProfileValidationConfirmationMessage)
     }

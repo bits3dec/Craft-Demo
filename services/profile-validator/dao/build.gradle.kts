@@ -7,6 +7,8 @@ plugins {
 dependencies {
     implementation(project(":services:profile-validator:domain"))
 
+    implementation("demo.craft:common-domain:0.0.9-SNAPSHOT")
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.postgresql:postgresql") // postgres database
