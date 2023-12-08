@@ -35,7 +35,6 @@ class UserProfileRequestService(
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
 
-    @Transactional
     fun triggerCreateUserProfileRequest(
         userId: String,
         userProfileMessage: UserProfileMessage,
@@ -72,7 +71,6 @@ class UserProfileRequestService(
             ?: throw UserProfileRequestNotFoundException(requestId)
     }
 
-    @Transactional
     fun triggerUpdateUserProfileRequest(
         userId: String,
         userProfileMessage: UserProfileMessage,

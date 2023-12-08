@@ -8,6 +8,7 @@ import demo.craft.common.domain.enums.Operation
 import demo.craft.common.domain.enums.State
 import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.user.profile.workflow.common.exception.UserProfileWorkflowAlreadyExistsException
+import demo.craft.user.profile.workflow.common.lock.UserProfileWorkflowLockManager
 import demo.craft.user.profile.workflow.communication.publisher.UserProfileWorkflowPublisher
 import demo.craft.user.profile.workflow.dao.UserProfileWorkflowAccess
 import demo.craft.user.profile.workflow.entity.UserProfileWorkflow
@@ -21,7 +22,8 @@ import javax.transaction.Transactional
 class UserProfileWorkflowService(
     private val userProfileWorkflowAccess: UserProfileWorkflowAccess,
     private val productRegistryService: ProductRegistryService,
-    private val userProfileWorkflowPublisher: UserProfileWorkflowPublisher
+    private val userProfileWorkflowPublisher: UserProfileWorkflowPublisher,
+    private val userProfileWorkflowLockManager: UserProfileWorkflowLockManager
 ) {
 
     private val objectMapper = jacksonObjectMapper().apply {
@@ -39,38 +41,40 @@ class UserProfileWorkflowService(
         operation: Operation,
         userProfileMessage: UserProfileMessage,
     ): UserProfileWorkflow {
-        userProfileWorkflowAccess.findByUserIdAndRequestId(userId, requestId)
-            ?.let {
-                throw UserProfileWorkflowAlreadyExistsException(userId, requestId)
-            }
+        return userProfileWorkflowLockManager.doExclusively(userId) {
+            userProfileWorkflowAccess.findByUserIdAndRequestId(userId, requestId)
+                ?.let {
+                    throw UserProfileWorkflowAlreadyExistsException(userId, requestId)
+                }
 
-        val userProfileWorkflow =
-            UserProfileWorkflow(
-                userId = userId,
-                requestId = requestId,
-                operation = operation,
-                newValue = objectMapper.writeValueAsString(userProfileMessage),
-                state = WorkflowState.INITIATED
-            )
+            val userProfileWorkflow =
+                UserProfileWorkflow(
+                    userId = userId,
+                    requestId = requestId,
+                    operation = operation,
+                    newValue = objectMapper.writeValueAsString(userProfileMessage),
+                    state = WorkflowState.INITIATED
+                )
 
-        userProfileWorkflowAccess.createOrUpdateUserProfileWork(userProfileWorkflow, failureReason = null)
-            .also {
-                val activeProductsForUser = productRegistryService.getAllSubscribedProductsForUser(userId)
-                // Publish to kafka to start profile validation
-                userProfileWorkflowPublisher.publishProfileValidationRequestMessage(it, activeProductsForUser)
-            }
+            userProfileWorkflowAccess.createOrUpdateUserProfileWork(userProfileWorkflow, failureReason = null)
+                .also {
+                    val activeProductsForUser = productRegistryService.getAllSubscribedProductsForUser(userId)
+                    // Publish to kafka to start profile validation
+                    userProfileWorkflowPublisher.publishProfileValidationRequestMessage(it, activeProductsForUser)
+                }
 
-        return userProfileWorkflowAccess.createOrUpdateUserProfileWork(userProfileWorkflow.copy(state = WorkflowState.PROFILE_VALIDATION_INITIATED), failureReason = null)
+            return@doExclusively userProfileWorkflowAccess.createOrUpdateUserProfileWork(userProfileWorkflow.copy(state = WorkflowState.PROFILE_VALIDATION_INITIATED), failureReason = null)
+        }
     }
 
-    @Transactional
     fun updateUserProfileWork(
         userId: String,
         requestId: String,
         state: State,
         failureReason: String?
     ): UserProfileWorkflow {
-        return userProfileWorkflowAccess.findByUserIdAndRequestId(userId, requestId)
+        return userProfileWorkflowLockManager.doExclusively(userId) {
+            return@doExclusively userProfileWorkflowAccess.findByUserIdAndRequestId(userId, requestId)
                 ?.let {
                     updateUserProfileWorkflowStates(it, state, failureReason)
                         .also { userProfileWorkflow ->
@@ -93,6 +97,7 @@ class UserProfileWorkflowService(
                 ?: let {
                     throw UserProfileWorkflowAlreadyExistsException(userId, requestId)
                 }
+        }
     }
 
     private fun updateUserProfileWorkflowStates(
