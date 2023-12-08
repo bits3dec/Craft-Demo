@@ -2,7 +2,7 @@ package demo.craft.profile.validator.service.strategy.impl
 
 import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.profile.validator.ValidationResult
-import demo.craft.profile.validator.product.integration.QuickBooksPaymentsService
+import demo.craft.profile.validator.service.strategy.partner.integration.QuickBooksPaymentsService
 import demo.craft.profile.validator.service.strategy.ValidationStrategy
 
 /**

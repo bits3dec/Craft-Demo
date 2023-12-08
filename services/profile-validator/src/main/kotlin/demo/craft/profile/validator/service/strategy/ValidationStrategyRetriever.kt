@@ -1,10 +1,10 @@
 package demo.craft.profile.validator.service.strategy
 
 import demo.craft.profile.validator.entity.enums.ValidationType
-import demo.craft.profile.validator.product.integration.QuickBooksAccountingService
-import demo.craft.profile.validator.product.integration.QuickBooksPaymentsService
-import demo.craft.profile.validator.product.integration.QuickBooksPayrollService
-import demo.craft.profile.validator.product.integration.TSheetsService
+import demo.craft.profile.validator.service.strategy.partner.integration.QuickBooksAccountingService
+import demo.craft.profile.validator.service.strategy.partner.integration.QuickBooksPaymentsService
+import demo.craft.profile.validator.service.strategy.partner.integration.QuickBooksPayrollService
+import demo.craft.profile.validator.service.strategy.partner.integration.TSheetsService
 import demo.craft.profile.validator.service.strategy.impl.*
 import org.springframework.stereotype.Component
 import javax.transaction.NotSupportedException

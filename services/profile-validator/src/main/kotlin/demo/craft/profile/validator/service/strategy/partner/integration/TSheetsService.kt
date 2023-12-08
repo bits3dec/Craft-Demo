@@ -1,4 +1,4 @@
-package demo.craft.profile.validator.product.integration
+package demo.craft.profile.validator.service.strategy.partner.integration
 
 import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.profile.validator.ValidationResult
