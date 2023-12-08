@@ -16,7 +16,7 @@ class TSheetsServiceImpl : TSheetsService {
     override fun validateUserProfile(userId: String, userProfileMessage: UserProfileMessage): ValidationResult {
         // Always successful
         return ValidationResult(
-            decision = ValidationDecision.SUCCESSFULL,
+            decision = ValidationDecision.SUCCESSFUL,
             failureReason = null
         )
     }

@@ -1,6 +1,6 @@
 package demo.craft.profile.validator
 
 enum class ValidationDecision {
-    SUCCESSFULL,
+    SUCCESSFUL,
     FAILED
 }

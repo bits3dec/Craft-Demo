@@ -1,16 +1,20 @@
-package demo.craft.profile.validator.service.validation.impl
+package demo.craft.profile.validator.service.strategy.impl
 
 import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.profile.validator.ValidationDecision
 import demo.craft.profile.validator.ValidationResult
-import demo.craft.profile.validator.service.validation.ValidationStrategy
+import demo.craft.profile.validator.service.strategy.ValidationStrategy
 
+
+/**
+ * This is global level validation strategy which is agnostic of product.
+ * Any kind of rule which is agnostic of product will sit here.
+ *
+ * Algorithm:
+ * This has a list of rules to check globally and decide the result.
+ */
 class GlobalLevelProfileValidationStrategy : ValidationStrategy {
 
-    /**
-     * Algorithm:
-     * This has a list of rules to check globally and decide the result.
-     */
     override fun validate(userId: String, userProfileMessage: UserProfileMessage): ValidationResult {
         // Rule#1: Business Address Country Rule checks country or list of country which are not allowed.
         if (userProfileMessage.businessAddress.country == "FooBar") {
@@ -21,7 +25,7 @@ class GlobalLevelProfileValidationStrategy : ValidationStrategy {
             )
         }
 
-        // Rule#1: Legal Address Country Rule checks country or list of country which are not allowed.
+        // Rule#2: Legal Address Country Rule checks country or list of country which are not allowed.
         if (userProfileMessage.legalAddress.country == "FooBar") {
             // Fail
             return ValidationResult(
@@ -34,7 +38,7 @@ class GlobalLevelProfileValidationStrategy : ValidationStrategy {
 
         // Else successful
         return ValidationResult(
-            decision = ValidationDecision.SUCCESSFULL,
+            decision = ValidationDecision.SUCCESSFUL,
             failureReason = null
         )
     }
