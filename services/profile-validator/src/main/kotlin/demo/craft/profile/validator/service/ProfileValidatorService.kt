@@ -11,6 +11,7 @@ import demo.craft.common.domain.kafka.impl.UserProfileValidationRequestMessage
 import demo.craft.profile.validator.ValidationDecision
 import demo.craft.profile.validator.ValidationResult
 import demo.craft.profile.validator.common.exception.InvalidUserProfileValidatorStateException
+import demo.craft.profile.validator.common.lock.UserProfileWorkflowLockManager
 import demo.craft.profile.validator.communication.publisher.ProfileValidatorPublisher
 import demo.craft.profile.validator.dao.ProfileValidatorWorkflowAccess
 import demo.craft.profile.validator.entity.UserProfileValidatorWorkflow
@@ -25,7 +26,8 @@ import java.time.Instant
 class ProfileValidatorService(
     private val userProfileValidatorWorkflowAccess: ProfileValidatorWorkflowAccess,
     private val validationStrategyRetriever: ValidationStrategyRetriever,
-    private val profileValidatorPublisher: ProfileValidatorPublisher
+    private val profileValidatorPublisher: ProfileValidatorPublisher,
+    private val userProfileWorkflowLockManager: UserProfileWorkflowLockManager
 ) {
     private val log = KotlinLogging.logger {}
     private val objectMapper = jacksonObjectMapper().apply {
@@ -47,7 +49,7 @@ class ProfileValidatorService(
      * If any one of the product level validations are un-successful then reject the request.
      *
      * TODO:
-     *  1. Parallely call the validation rules.
+     *  1. Parallely call the validation rules for optimisation.
      *  2. Add retryer mechanism to recover in case of unknown failures and make it fault tolerant.
      */
     fun createUserProfileValidatorWorkflow(userProfileValidationRequestMessage: UserProfileValidationRequestMessage) {
@@ -55,66 +57,67 @@ class ProfileValidatorService(
         val requestId = userProfileValidationRequestMessage.requestId
         val userProfileMessage = userProfileValidationRequestMessage.userProfileMessage
 
-        val validationTypes = mutableListOf<ValidationType>()
-        userProfileValidationRequestMessage.products
-            .forEach { product ->
-                validationTypes.add(productToValidationTypeMap[product]!!)
-            }
-        // Adding Global Validation always irrespective of product exists or not.
-        validationTypes.add(ValidationType.GLOBAL)
-
-        // List to store the validation results
-        val totalResults = mutableListOf<ValidationResult>()
-
-        /*
-         TODO: Validation calls are independent of each other.
-          These can be parallelized for optimisation purpose.
-         */
-        // Get result as per each validation type
-        validationTypes.forEach { validationType ->
-            val result = validationStrategyRetriever.getValidationStrategy(validationType)
-                .validate(userId, userProfileMessage)
-            totalResults.add(result)
-
-            val state = when (result.decision) {
-                ValidationDecision.SUCCESSFUL -> {
-                    State.ACCEPTED
+        userProfileWorkflowLockManager.doExclusively(userId) {
+            val validationTypes = mutableListOf<ValidationType>()
+            userProfileValidationRequestMessage.products
+                .forEach { product ->
+                    validationTypes.add(productToValidationTypeMap[product]!!)
                 }
-                ValidationDecision.FAILED -> {
-                    State.REJECTED
+            // Adding Global Validation always irrespective of product exists or not.
+            validationTypes.add(ValidationType.GLOBAL)
+
+            // List to store the validation results
+            val totalResults = mutableListOf<ValidationResult>()
+
+            /*
+             TODO: Validation calls are independent of each other.
+              These can be parallelized for optimisation purpose.
+             */
+            // Get result as per each validation type
+            validationTypes.forEach { validationType ->
+                val result = validationStrategyRetriever.getValidationStrategy(validationType)
+                    .validate(userId, userProfileMessage)
+                totalResults.add(result)
+
+                val state = when (result.decision) {
+                    ValidationDecision.SUCCESSFUL -> {
+                        State.ACCEPTED
+                    }
+                    ValidationDecision.FAILED -> {
+                        State.REJECTED
+                    }
+                    else -> {
+                        throw InvalidUserProfileValidatorStateException(userId, requestId)
+                    }
                 }
-                else -> {
-                    throw InvalidUserProfileValidatorStateException(userId, requestId)
-                }
-            }
-            val userProfileValidatorWorkflow =
-                UserProfileValidatorWorkflow(
-                    userId = userProfileValidationRequestMessage.userId,
-                    requestId = userProfileValidationRequestMessage.requestId,
-                    newValue = objectMapper.writeValueAsString(userProfileValidationRequestMessage.userProfileMessage),
-                    operation = userProfileValidationRequestMessage.operation,
-                    validationType = validationType,
-                    state = state
+                val userProfileValidatorWorkflow =
+                    UserProfileValidatorWorkflow(
+                        userId = userProfileValidationRequestMessage.userId,
+                        requestId = userProfileValidationRequestMessage.requestId,
+                        newValue = objectMapper.writeValueAsString(userProfileValidationRequestMessage.userProfileMessage),
+                        operation = userProfileValidationRequestMessage.operation,
+                        validationType = validationType,
+                        state = state
+                    )
+                userProfileValidatorWorkflowAccess.createProfileValidatorWorkflow(
+                    userProfileValidatorWorkflow = userProfileValidatorWorkflow,
+                    failureReason = result.failureReason
                 )
-            userProfileValidatorWorkflowAccess.createProfileValidatorWorkflow(
-                userProfileValidatorWorkflow = userProfileValidatorWorkflow,
-                failureReason = result.failureReason
-            )
-        }
-
-
-        // Get failed results
-        val failedResults =
-            totalResults.filter {
-                it.decision == ValidationDecision.FAILED
             }
 
-        /*
-        Check if any failed result exists.
-        If failed result exists then reject the request else accept.
-         */
-        val userProfileValidationConfirmationMessage =
-            if (failedResults.isNotEmpty()) {
+
+            // Get failed results
+            val failedResults =
+                totalResults.filter {
+                    it.decision == ValidationDecision.FAILED
+                }
+
+            /*
+            Check if any failed result exists.
+            If failed result exists then reject the request else accept.
+             */
+            val userProfileValidationConfirmationMessage =
+                if (failedResults.isNotEmpty()) {
                     UserProfileValidationConfirmationMessage(
                         userId = userId,
                         requestId = requestId,
@@ -122,16 +125,17 @@ class ProfileValidatorService(
                         state = State.REJECTED,
                         failureReason = "Profile Validation Failed due to $failedResults"
                     )
-            } else {
-                UserProfileValidationConfirmationMessage(
-                    userId = userId,
-                    requestId = requestId,
-                    timestamp = Timestamp.from(Instant.now()),
-                    state = State.ACCEPTED,
-                    failureReason = null
-                )
-            }
+                } else {
+                    UserProfileValidationConfirmationMessage(
+                        userId = userId,
+                        requestId = requestId,
+                        timestamp = Timestamp.from(Instant.now()),
+                        state = State.ACCEPTED,
+                        failureReason = null
+                    )
+                }
 
-        profileValidatorPublisher.publishProfileRequestMessage(userProfileValidationConfirmationMessage)
+            profileValidatorPublisher.publishProfileRequestMessage(userProfileValidationConfirmationMessage)
+        }
     }
 }
