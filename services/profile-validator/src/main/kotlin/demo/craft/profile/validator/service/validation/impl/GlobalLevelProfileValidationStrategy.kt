@@ -12,14 +12,21 @@ class GlobalLevelProfileValidationStrategy : ValidationStrategy {
      * This has a list of rules to check globally and decide the result.
      */
     override fun validate(userId: String, userProfileMessage: UserProfileMessage): ValidationResult {
-        // Country Rule: List of country which are not allowed.
-        if (userProfileMessage.businessAddress.country == "FooBar" ||
-            userProfileMessage.legalAddress.country == "FooBar"
-        ) {
+        // Rule#1: Business Address Country Rule checks country or list of country which are not allowed.
+        if (userProfileMessage.businessAddress.country == "FooBar") {
             // Fail
             return ValidationResult(
                 decision = ValidationDecision.FAILED,
                 failureReason = "Country: ${userProfileMessage.businessAddress.country} is not serviceable."
+            )
+        }
+
+        // Rule#1: Legal Address Country Rule checks country or list of country which are not allowed.
+        if (userProfileMessage.legalAddress.country == "FooBar") {
+            // Fail
+            return ValidationResult(
+                decision = ValidationDecision.FAILED,
+                failureReason = "Country: ${userProfileMessage.legalAddress.country} is not serviceable."
             )
         }
 

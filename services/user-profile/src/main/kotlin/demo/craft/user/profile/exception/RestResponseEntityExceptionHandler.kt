@@ -26,7 +26,8 @@ class RestResponseEntityExceptionHandler(
         UserProfileRequestNotFoundException::class to HttpStatus.NOT_FOUND,
         UserProfileRequestAlreadyInProgressException::class to HttpStatus.CONFLICT,
         UserProfileAlreadyExistsException::class to HttpStatus.CONFLICT,
-        InvalidUserProfileRequestException::class to HttpStatus.BAD_REQUEST
+        InvalidUserProfileRequestException::class to HttpStatus.BAD_REQUEST,
+        DuplicateUserProfileException::class to HttpStatus.CONFLICT
     )
 
     @ExceptionHandler
@@ -63,7 +64,5 @@ class RestResponseEntityExceptionHandler(
     )
 
     private fun UserProfileException.toErrorBody() =
-        ErrorBody(
-            message = this.message,
-        )
+        ErrorBody(this.message)
 }

@@ -1,9 +1,5 @@
 package demo.craft.user.profile.controller
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.user.profile.api.UserProfileRequestApi
 import demo.craft.user.profile.common.exception.InvalidUserProfileRequestException
@@ -29,7 +25,7 @@ class UserProfileRequestController(
         log.debug { "Received request in [User-Profile] Controller to create business profile." }
 
         val userProfileMessage = createBusinessProfileRequest.userProfile.toUserProfileMessage()
-        validate(xMinusUserMinusId, userProfileMessage)
+        validate(userProfileMessage)
 
         return ResponseEntity.ok(
             CreateUserProfileResponse(
@@ -57,7 +53,7 @@ class UserProfileRequestController(
         log.debug { "Received request in [User-Profile] Controller to update business profile." }
 
         val userProfileMessage = updateBusinessProfileRequest.userProfile.toUserProfileMessage()
-        validate(xMinusUserMinusId, userProfileMessage)
+        validate(userProfileMessage)
 
         return ResponseEntity.ok(
             UpdateUserProfileResponse(
@@ -66,7 +62,7 @@ class UserProfileRequestController(
         )
     }
 
-    private fun validate(userId: String, userProfileMessage: UserProfileMessage) {
+    private fun validate(userProfileMessage: UserProfileMessage) {
         val invalidFields = userProfileMessage.validateFields()
         if (invalidFields.isNotEmpty()) {
             throw InvalidUserProfileRequestException(invalidFields.toString())

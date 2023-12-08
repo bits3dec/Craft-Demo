@@ -63,7 +63,8 @@ class ProfileValidatorService(
         val totalResults = mutableListOf<ValidationResult>()
 
         /*
-        TODO: This validation checks can be parallelized for optimisation purpose.
+         TODO: Validation calls are independent of each other.
+          These can be parallelized for optimisation purpose.
          */
         // Get result as per each validation type
         validationTypes.forEach { validationType ->
