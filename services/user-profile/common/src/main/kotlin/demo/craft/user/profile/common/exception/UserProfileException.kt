@@ -19,3 +19,6 @@ class UserProfileAlreadyExistsException :
 
 class InvalidUserProfileRequestException(invalidFields: String) :
     UserProfileException("Invalid User profile request. Invalid Fields: $invalidFields")
+
+class DuplicateUserProfileException() :
+    UserProfileException("The user profile already exists with the same value")

@@ -9,13 +9,11 @@ import demo.craft.common.domain.enums.Operation
 import demo.craft.common.domain.enums.State
 import demo.craft.common.domain.kafka.impl.UserProfileMessage
 import demo.craft.user.profile.common.cache.GenericCacheManager
-import demo.craft.user.profile.common.exception.UserProfileAlreadyExistsException
-import demo.craft.user.profile.common.exception.UserProfileNotFoundException
-import demo.craft.user.profile.common.exception.UserProfileRequestAlreadyInProgressException
-import demo.craft.user.profile.common.exception.UserProfileRequestNotFoundException
+import demo.craft.user.profile.common.exception.*
 import demo.craft.user.profile.common.lock.UserProfileLockManager
 import demo.craft.user.profile.communication.publisher.UserProfilePublisher
 import demo.craft.user.profile.dao.UserProfileAccess
+import demo.craft.user.profile.dao.toUserProfile
 import demo.craft.user.profile.domain.entity.UserProfile
 import demo.craft.user.profile.domain.entity.UserProfileRequest
 import mu.KotlinLogging
@@ -44,6 +42,7 @@ class UserProfileRequestService(
     ): UserProfileRequest {
         log.debug { "Received request in [User-Profile] Controller to create business profile." }
         return userProfileLockManager.doExclusively(userId) {
+            // Assert user-profile in request
             assertUserProfileShouldNotExistForUser(userId)
             assertNoRequestInProgressExistsForUser(userId)
 
@@ -81,8 +80,10 @@ class UserProfileRequestService(
         log.debug { "Received request in [User-Profile] Controller to update business profile." }
 
         return userProfileLockManager.doExclusively(userId) {
+            // Assert user-profile in request
             assertUserProfileShouldExistForUser(userId)
             assertNoRequestInProgressExistsForUser(userId)
+            assertUpdateRequestIsNotSameAsExistingForUser(userId, userProfileMessage.toUserProfile(userId))
 
             val requestId = UUID.randomUUID().toString()
             log.debug { "Request-id: $requestId generated for update request" }
@@ -156,5 +157,15 @@ class UserProfileRequestService(
             ?. let {
                 throw UserProfileAlreadyExistsException()
             }
+    }
+
+    private fun assertUpdateRequestIsNotSameAsExistingForUser(
+        userId: String,
+        newUserProfile: UserProfile
+    ) {
+        val currentUserProfile = userProfileAccess.findUserProfileByUserId(userId)
+        if (newUserProfile == currentUserProfile) {
+            throw DuplicateUserProfileException()
+        }
     }
 }
